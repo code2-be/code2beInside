@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">
+    {% if type == 'incoming' %}
+      Mouvement entrant
+    {% else %}
+      Mouvement sortant
+    {% endif %}
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr>
+      <th>Date</th>
+      <th>Montant</th>
+      <th>Objet</th>
+      <th>&nbsp</th>
+    </tr>
+  </table>
+</div>
+{% endblock %}

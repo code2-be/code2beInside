@@ -1,0 +1,5 @@
+/app/vendor
+/app/cache
+/generated-sql
+/app/config/parameters.yml
+/propel.yml.dist

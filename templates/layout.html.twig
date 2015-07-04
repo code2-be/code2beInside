@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code2be Inside</title>
+  {% for css in assets.getStylesheets %}
+    <link href="{{css}}" rel="stylesheet">
+  {% endfor %}
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+  <header>
+    {% include '_menu.html.twig' %}
+  </header>
+  <div class="container">
+    {% block body %}
+
+    {% endblock %}
+  </div>
+  <footer>
+
+  </footer>
+
+  {% for js in assets.getJavascripts %}
+    <script type="text/javascript" src="{{js}}"></script>
+  {% endfor %}
+</body>
+</html>
+
+

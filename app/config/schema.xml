@@ -1,0 +1,43 @@
+<!--
+    Awesome, your propel set up is nearly done! You just have to describe how you want your database to look like.
+
+    You can let propel set up your mysql database by running `vendor/bin/propel database:create && vendor/bin/propel database:insert-sql`.
+    This will create your database including all the tables.
+-->
+
+<!--
+    The root tag of the XML schema is the <database> tag.
+
+    The `name` attribute defines the name of the connection that Propel uses for the tables in this schema. It is not
+    necessarily the name of the actual database. In fact, Propel uses some configuration properties to link a connection
+    name with real connection settings (like database name, user and password).
+
+    The `defaultIdMethod` attribute indicates that the tables in this schema use the database's "native"
+    auto-increment/sequence features to handle id columns that are set to auto-increment.
+
+   [TIP]: You can define several schemas for a single project. Just make sure that each of the schema
+          filenames end with schema.xml.
+-->
+<database name="code2be" defaultIdMethod="native"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
+          namespace="Code2be\Model"
+        >
+    <table name="user" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="first_name" type="varchar" size="255" required="true"/>
+        <column name="last_name" type="varchar" size="255" required="true"/>
+        <column name="email" type="varchar" size="255" required="true"/>
+        <column name="password" type="varchar" size="255" />
+        <column name="phone_number" type="varchar" size="255" />
+        <behavior name="validate">
+            <parameter name="rule1" value="{column: first_name, validator: NotNull}" />
+            <parameter name="rule2" value="{column: first_name, validator: Length, options: {max: 255}}" />
+            <parameter name="rule3" value="{column: last_name, validator: NotNull}" />
+            <parameter name="rule4" value="{column: last_name, validator: Length, options: {max: 255}}" />
+            <parameter name="rule5" value="{column: email, validator: Email}" />
+            <parameter name="rule6" value="{column: email, validator: NotNull}" />
+            <parameter name="rule7" value="{column: phone_number, validator: Length, options: {max: 255}}" />
+        </behavior>
+    </table>
+</database>

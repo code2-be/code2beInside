@@ -1,0 +1,31 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+
+<a href="{{ urlFor('user') }}" class="btn btn-primary">Nouveau Membre</a>
+<br /><br />
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Liste des membres Code2be</div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Mail</th>
+      <th>Téléphone</th>
+      <th>&nbsp</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.lastName }}</td>
+      <td>{{ user.firstName }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.phoneNumber }}</td>
+      <td><a href="{{ urlFor('user', {'id':user.id}) }}"><i class="fa fa-pencil-square-o"></i></a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

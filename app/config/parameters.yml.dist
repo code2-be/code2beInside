@@ -1,0 +1,5 @@
+database:
+  host: localhost
+  name: code2be
+  user: root
+  password:
