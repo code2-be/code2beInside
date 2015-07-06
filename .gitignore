@@ -2,5 +2,5 @@
 /app/cache
 /generated-sql
 /app/config/parameters.yml
-/propel.yml.dist
+/propel.yml
 *.DS_Store
