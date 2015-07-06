@@ -3,3 +3,8 @@ database:
   name: code2be
   user: root
   password:
+mailer:
+  host: smtp.sendgrid.net
+  user: login
+  password: pass
+  sender: no-reply@code2.be

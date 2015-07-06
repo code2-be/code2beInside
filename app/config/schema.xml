@@ -39,5 +39,8 @@
             <parameter name="rule6" value="{column: email, validator: NotNull}" />
             <parameter name="rule7" value="{column: phone_number, validator: Length, options: {max: 255}}" />
         </behavior>
+        <unique name="email_index">
+          <unique-column name="email" />
+        </unique>
     </table>
 </database>

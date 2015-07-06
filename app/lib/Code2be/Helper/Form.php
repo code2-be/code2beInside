@@ -7,7 +7,7 @@ class Form
 {
     public static function handleRequest($post, &$object) {
         foreach ($post as $key => $value) {
-            if ($key == 'id') {
+            if ($key == 'id' || !method_exists($object, "set".ucfirst($key))) {
                 continue;
             }
             $value = ($value=='')?null:$value;

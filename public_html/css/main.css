@@ -1,0 +1,6 @@
+.navbar-right>.logout {
+  padding: 10px;
+}
+.navbar-right>.logout a {
+  padding: 0px;
+}

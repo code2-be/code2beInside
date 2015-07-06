@@ -5,13 +5,14 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\Connection\ConnectionManagerSingle;
 
 require '../app/vendor/autoload.php';
+define('__ROOT__', dirname(__FILE__).'/..');
 
 // Conf
 $app = new \Slim\Slim([
     'templates.path' => '../templates',
     'view' => new \Slim\Views\Twig(),
 ]);
-
+$app->add(new \Code2be\Middleware\Security());
 // View templates
 $view = $app->view();
 $view->parserOptions = array(
@@ -32,7 +33,7 @@ $twig->addExtension(new \Code2be\Twig\Extension);
 
 // Paramaters for database connections
 $parser = new \Symfony\Component\Yaml\Parser;
-$yaml   = $parser->parse(file_get_contents(dirname(__FILE__) . '/../app/config/parameters.yml'));
+$yaml   = $parser->parse(file_get_contents(__ROOT__ . '/app/config/parameters.yml'));
 
 // Propel
 $serviceContainer = Propel::getServiceContainer();

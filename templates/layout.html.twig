@@ -10,7 +10,9 @@
 </head>
 <body>
   <header>
-    {% include '_menu.html.twig' %}
+    {% block menu %}
+      {% include '_menu.html.twig' %}
+    {% endblock %}
   </header>
   <div class="container">
     {% block body %}

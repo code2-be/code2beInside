@@ -7,6 +7,23 @@
         echo $app->view->render('homepage.html.twig', ['active' => 'homepage']);
     })->name('homepage');
 
+    $app->get('/login', function() use ($app) {
+        echo $app->view->render('login.html.twig', ['active' => 'homepage']);
+    })->name('login');
+
+    $app->get('/logout', function() use ($app) {
+        \Code2be\Helper\Auth::logout();
+        $app->redirect('/');
+    })->name('logout');
+
+    $app->post('/login', function() use ($app) {
+        $post = $app->request->post();
+        if (!\Code2be\Helper\Auth::login($post)) {
+            $app->flash('error', 'Mauvais login ou mot de passe');
+        }
+        $app->redirect('/');
+    })->name('login_post');
+
     $app->get('/users', function() use ($app) {
         $users = UserQuery::create()
             ->orderByLastName()
@@ -43,6 +60,9 @@
         Form::handleRequest($post, $user);
         $errors = [];
         if ($user->validate()) {
+            if (isset($post['generatePassword']) && !empty($post['generatePassword'])) {
+                \Code2be\Helper\Auth::generatePassword($user);
+            }
             $user->save();
             $app->flash('success', 'Membre sauvegardé avec succès');
             $app->redirect('/user/'.$user->getId());
@@ -56,7 +76,6 @@
                 ['user'=>$user, 'active' => 'users', 'errors' => $errors]
             );
         }
-
     })->name('user_post');
 
     $app->get('/ideabox', function() use ($app) {
