@@ -1,0 +1,10 @@
+propel:
+    database:
+        connections:
+            code2be:
+                adapter: mysql
+                dsn: mysql:host=localhost;dbname=code2be
+                user: root
+                password:
+                settings:
+                    charset: utf8
