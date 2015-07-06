@@ -30,6 +30,10 @@
         <column name="email" type="varchar" size="255" required="true"/>
         <column name="password" type="varchar" size="255" />
         <column name="phone_number" type="varchar" size="255" />
+        <column name="role" type="varchar" size="25" />
+        <unique name="email_index">
+          <unique-column name="email" />
+        </unique>
         <behavior name="validate">
             <parameter name="rule1" value="{column: first_name, validator: NotNull}" />
             <parameter name="rule2" value="{column: first_name, validator: Length, options: {max: 255}}" />
@@ -38,9 +42,22 @@
             <parameter name="rule5" value="{column: email, validator: Email}" />
             <parameter name="rule6" value="{column: email, validator: NotNull}" />
             <parameter name="rule7" value="{column: phone_number, validator: Length, options: {max: 255}}" />
+            <parameter name="rule8" value="{column: role, validator: Choice, options: {choices : [ROLE_MEMBER,ROLE_TREASURER,ROLE_PRESIDENT] ,message: Bad role view app/conf/schema.xml}}" />
         </behavior>
-        <unique name="email_index">
-          <unique-column name="email" />
-        </unique>
+        <behavior name="timestampable" />
+    </table>
+    <table name="topic" phpName="Topic">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="title" type="varchar" size="255" required="true"/>
+        <behavior name="timestampable" />
+    </table>
+    <table name="comment" phpName="Comment">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="message" type="varchar" size="255" required="true"/>
+        <column name="topic_id" type="integer" required="true" />
+        <foreign-key foreignTable = "topic">
+          <reference local="topic_id" foreign="id" />
+        </foreign-key>
+        <behavior name="timestampable" />
     </table>
 </database>

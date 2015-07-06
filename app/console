@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/vendor/autoload.php';
+define('__ROOT__', dirname(__FILE__).'/..');
+
+use Symfony\Component\Console\Application;
+use Code2be\Command\FixturesCommand;
+
+\Code2be\Connection\Connection::connect();
+
+$console = new Application();
+$console->add(new FixturesCommand);
+$console->run();

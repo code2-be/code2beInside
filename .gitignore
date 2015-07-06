@@ -3,3 +3,4 @@
 /generated-sql
 /app/config/parameters.yml
 /propel.yml.dist
+*.DS_Store
