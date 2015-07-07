@@ -28,7 +28,11 @@ $app->view = $view;
 $twig = $app->view->getEnvironment();
 $twig->addExtension(new \Code2be\Twig\Extension);
 
-\Code2be\Connection\Connection::connect();
+// Include the main Propel script
+require_once __ROOT__.'/app/vendor/propel/propel1/runtime/lib/Propel.php';
+
+// Initialize Propel with the runtime configuration
+Propel::init(__ROOT__."/app/config/code2be-conf.php");
 
 require '../app/routes/routes.php';
 

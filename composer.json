@@ -6,12 +6,13 @@
         "slim/slim": "2.*",
         "slim/extras": "2.*",
         "twig/twig": "~1.0",
-        "propel/propel": "2.0.*@dev",
+        "propel/propel1": "~1.6",
         "slim/views": "0.1.3",
         "respect/validation": "0.7.*",
         "swiftmailer/swiftmailer": "@stable",
         "intervention/image": "@stable",
-        "symfony/console": "@stable"
+        "symfony/console": "@stable",
+        "symfony/yaml": "2.7.1"
     },
     "autoload": {
       "psr-0": {"": "app/lib/"}

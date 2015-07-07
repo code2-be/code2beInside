@@ -2,7 +2,7 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\Base\UserQuery as BaseUserQuery;
+use Code2be\Model\om\BaseUserQuery;
 use Code2be\Model\User;
 
 /**

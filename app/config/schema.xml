@@ -26,24 +26,39 @@
     <table name="user" phpName="User">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
         <column name="first_name" type="varchar" size="255" required="true"/>
+        <validator column="first_name">
+          <rule name="required" message="This field is required."/>
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size"/>
+        </validator>
         <column name="last_name" type="varchar" size="255" required="true"/>
+        <validator column="last_name">
+          <rule name="required" message="This field is required." />
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size" />
+        </validator>
         <column name="email" type="varchar" size="255" required="true"/>
+        <validator column="email">
+          <rule name="required" message="This field is required." />
+          <rule name="unique" message="This entry already exists !"/>
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size" />
+        </validator>
         <column name="password" type="varchar" size="255" />
+        <validator column="password">
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size" />
+        </validator>
         <column name="phone_number" type="varchar" size="255" />
+        <validator column="phone_number">
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size" />
+        </validator>
         <column name="role" type="varchar" size="25" />
+        <validator column="role">
+          <rule
+            name="validValues"
+            value="ROLE_MEMBER|ROLE_TREASURER|ROLE_PRESIDENT"
+            message="Please select a valid role type." />
+        </validator>
         <unique name="email_index">
           <unique-column name="email" />
         </unique>
-        <behavior name="validate">
-            <parameter name="rule1" value="{column: first_name, validator: NotNull}" />
-            <parameter name="rule2" value="{column: first_name, validator: Length, options: {max: 255}}" />
-            <parameter name="rule3" value="{column: last_name, validator: NotNull}" />
-            <parameter name="rule4" value="{column: last_name, validator: Length, options: {max: 255}}" />
-            <parameter name="rule5" value="{column: email, validator: Email}" />
-            <parameter name="rule6" value="{column: email, validator: NotNull}" />
-            <parameter name="rule7" value="{column: phone_number, validator: Length, options: {max: 255}}" />
-            <parameter name="rule8" value="{column: role, validator: Choice, options: {choices : [ROLE_MEMBER,ROLE_TREASURER,ROLE_PRESIDENT] ,message: Bad role view app/conf/schema.xml}}" />
-        </behavior>
         <behavior name="timestampable" />
     </table>
     <table name="topic" phpName="Topic">

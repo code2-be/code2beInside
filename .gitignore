@@ -1,6 +1,11 @@
 /app/vendor
-/app/cache
+/app/cache/*
+/app/data/*
 /generated-sql
 /app/config/parameters.yml
+/app/config/runtime-conf.xml
+/app/config/build.properties
+/app/config/code2be-conf.php
+/app/config/code2be-classmap.php
 /propel.yml
 *.DS_Store

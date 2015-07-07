@@ -1,18 +1,9 @@
 <?php
 
-namespace Code2be\Model\Map;
+namespace Code2be\Model\map;
 
-use Code2be\Model\User;
-use Code2be\Model\UserQuery;
-use Propel\Runtime\Propel;
-use Propel\Runtime\ActiveQuery\Criteria;
-use Propel\Runtime\ActiveQuery\InstancePoolTrait;
-use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\PropelException;
-use Propel\Runtime\Map\RelationMap;
-use Propel\Runtime\Map\TableMap;
-use Propel\Runtime\Map\TableMapTrait;
+use \RelationMap;
+use \TableMap;
 
 
 /**
@@ -25,132 +16,18 @@ use Propel\Runtime\Map\TableMapTrait;
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
  *
+ * @package    propel.generator..map
  */
 class UserTableMap extends TableMap
 {
-    use InstancePoolTrait;
-    use TableMapTrait;
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'Code2be.Model.Map.UserTableMap';
+    const CLASS_NAME = '.map.UserTableMap';
 
     /**
-     * The default database name for this class
-     */
-    const DATABASE_NAME = 'code2be';
-
-    /**
-     * The table name for this class
-     */
-    const TABLE_NAME = 'user';
-
-    /**
-     * The related Propel class for this table
-     */
-    const OM_CLASS = '\\Code2be\\Model\\User';
-
-    /**
-     * A class that can be returned by this tableMap
-     */
-    const CLASS_DEFAULT = 'Code2be.Model.User';
-
-    /**
-     * The total number of columns
-     */
-    const NUM_COLUMNS = 9;
-
-    /**
-     * The number of lazy-loaded columns
-     */
-    const NUM_LAZY_LOAD_COLUMNS = 0;
-
-    /**
-     * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
-     */
-    const NUM_HYDRATE_COLUMNS = 9;
-
-    /**
-     * the column name for the id field
-     */
-    const COL_ID = 'user.id';
-
-    /**
-     * the column name for the first_name field
-     */
-    const COL_FIRST_NAME = 'user.first_name';
-
-    /**
-     * the column name for the last_name field
-     */
-    const COL_LAST_NAME = 'user.last_name';
-
-    /**
-     * the column name for the email field
-     */
-    const COL_EMAIL = 'user.email';
-
-    /**
-     * the column name for the password field
-     */
-    const COL_PASSWORD = 'user.password';
-
-    /**
-     * the column name for the phone_number field
-     */
-    const COL_PHONE_NUMBER = 'user.phone_number';
-
-    /**
-     * the column name for the role field
-     */
-    const COL_ROLE = 'user.role';
-
-    /**
-     * the column name for the created_at field
-     */
-    const COL_CREATED_AT = 'user.created_at';
-
-    /**
-     * the column name for the updated_at field
-     */
-    const COL_UPDATED_AT = 'user.updated_at';
-
-    /**
-     * The default string format for model objects of the related table
-     */
-    const DEFAULT_STRING_FORMAT = 'YAML';
-
-    /**
-     * holds an array of fieldnames
-     *
-     * first dimension keys are the type constants
-     * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
-     */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'Password', 'PhoneNumber', 'Role', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'role', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD, UserTableMap::COL_PHONE_NUMBER, UserTableMap::COL_ROLE, UserTableMap::COL_CREATED_AT, UserTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password', 'phone_number', 'role', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
-    );
-
-    /**
-     * holds an array of keys for quick access to the fieldnames array
-     *
-     * first dimension keys are the type constants
-     * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
-     */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'Password' => 4, 'PhoneNumber' => 5, 'Role' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'password' => 4, 'phoneNumber' => 5, 'role' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_PHONE_NUMBER => 5, UserTableMap::COL_ROLE => 6, UserTableMap::COL_CREATED_AT => 7, UserTableMap::COL_UPDATED_AT => 8, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password' => 4, 'phone_number' => 5, 'role' => 6, 'created_at' => 7, 'updated_at' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
-    );
-
-    /**
-     * Initialize the table attributes and columns
+     * Initialize the table attributes, columns and validators
      * Relations are not initialized by this method since they are lazy loaded
      *
      * @return void
@@ -161,9 +38,8 @@ class UserTableMap extends TableMap
         // attributes
         $this->setName('user');
         $this->setPhpName('User');
-        $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Code2be\\Model\\User');
-        $this->setPackage('Code2be.Model');
+        $this->setClassname('Code2be\\Model\\User');
+        $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
@@ -175,6 +51,17 @@ class UserTableMap extends TableMap
         $this->addColumn('role', 'Role', 'VARCHAR', false, 25, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        // validators
+        $this->addValidator('first_name', 'required', 'propel.validator.RequiredValidator', '', 'This field is required.');
+        $this->addValidator('first_name', 'maxLength', 'propel.validator.MaxLengthValidator', '255', 'This field can be no larger than 255 in size');
+        $this->addValidator('last_name', 'required', 'propel.validator.RequiredValidator', '', 'This field is required.');
+        $this->addValidator('last_name', 'maxLength', 'propel.validator.MaxLengthValidator', '255', 'This field can be no larger than 255 in size');
+        $this->addValidator('email', 'required', 'propel.validator.RequiredValidator', '', 'This field is required.');
+        $this->addValidator('email', 'unique', 'propel.validator.UniqueValidator', '', 'This entry already exists !');
+        $this->addValidator('email', 'maxLength', 'propel.validator.MaxLengthValidator', '255', 'This field can be no larger than 255 in size');
+        $this->addValidator('password', 'maxLength', 'propel.validator.MaxLengthValidator', '255', 'This field can be no larger than 255 in size');
+        $this->addValidator('phone_number', 'maxLength', 'propel.validator.MaxLengthValidator', '255', 'This field can be no larger than 255 in size');
+        $this->addValidator('role', 'validValues', 'propel.validator.ValidValuesValidator', 'ROLE_MEMBER|ROLE_TREASURER|ROLE_PRESIDENT', 'Please select a valid role type.');
     } // initialize()
 
     /**
@@ -193,286 +80,12 @@ class UserTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'validate' => array('rule1' => array ('column' => 'first_name','validator' => 'NotNull',), 'rule2' => array ('column' => 'first_name','validator' => 'Length','options' => array ('max' => 255,),), 'rule3' => array ('column' => 'last_name','validator' => 'NotNull',), 'rule4' => array ('column' => 'last_name','validator' => 'Length','options' => array ('max' => 255,),), 'rule5' => array ('column' => 'email','validator' => 'Email',), 'rule6' => array ('column' => 'email','validator' => 'NotNull',), 'rule7' => array ('column' => 'phone_number','validator' => 'Length','options' => array ('max' => 255,),), 'rule8' => array ('column' => 'role','validator' => 'Choice','options' => array ('choices' => array (0 => 'ROLE_MEMBER',1 => 'ROLE_TREASURER',2 => 'ROLE_PRESIDENT',),'message' => 'Bad role view app/conf/schema.xml',),), ),
-            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', ),
+            'timestampable' =>  array (
+  'create_column' => 'created_at',
+  'update_column' => 'updated_at',
+  'disable_updated_at' => 'false',
+),
         );
     } // getBehaviors()
 
-    /**
-     * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
-     *
-     * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
-     * a multi-column primary key, a serialize()d version of the primary key will be returned.
-     *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
-     *
-     * @return string The primary key hash of the row
-     */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
-            return null;
-        }
-
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-    }
-
-    /**
-     * Retrieves the primary key from the DB resultset row
-     * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
-     * a multi-column primary key, an array of the primary key columns will be returned.
-     *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
-     *
-     * @return mixed The primary key of the row
-     */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        return (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-        ];
-    }
-
-    /**
-     * The class that the tableMap will make instances of.
-     *
-     * If $withPrefix is true, the returned path
-     * uses a dot-path notation which is translated into a path
-     * relative to a location on the PHP include_path.
-     * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
-     *
-     * @param boolean $withPrefix Whether or not to return the path with the class name
-     * @return string path.to.ClassName
-     */
-    public static function getOMClass($withPrefix = true)
-    {
-        return $withPrefix ? UserTableMap::CLASS_DEFAULT : UserTableMap::OM_CLASS;
-    }
-
-    /**
-     * Populates an object of the default type or an object that inherit from the default.
-     *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     * @return array           (User object, last column rank)
-     */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        $key = UserTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = UserTableMap::getInstanceFromPool($key))) {
-            // We no longer rehydrate the object, since this can cause data loss.
-            // See http://www.propelorm.org/ticket/509
-            // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + UserTableMap::NUM_HYDRATE_COLUMNS;
-        } else {
-            $cls = UserTableMap::OM_CLASS;
-            /** @var User $obj */
-            $obj = new $cls();
-            $col = $obj->hydrate($row, $offset, false, $indexType);
-            UserTableMap::addInstanceToPool($obj, $key);
-        }
-
-        return array($obj, $col);
-    }
-
-    /**
-     * The returned array will contain objects of the default type or
-     * objects that inherit from the default.
-     *
-     * @param DataFetcherInterface $dataFetcher
-     * @return array
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
-    {
-        $results = array();
-
-        // set the class once to avoid overhead in the loop
-        $cls = static::getOMClass(false);
-        // populate the object(s)
-        while ($row = $dataFetcher->fetch()) {
-            $key = UserTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = UserTableMap::getInstanceFromPool($key))) {
-                // We no longer rehydrate the object, since this can cause data loss.
-                // See http://www.propelorm.org/ticket/509
-                // $obj->hydrate($row, 0, true); // rehydrate
-                $results[] = $obj;
-            } else {
-                /** @var User $obj */
-                $obj = new $cls();
-                $obj->hydrate($row);
-                $results[] = $obj;
-                UserTableMap::addInstanceToPool($obj, $key);
-            } // if key exists
-        }
-
-        return $results;
-    }
-    /**
-     * Add all the columns needed to create a new object.
-     *
-     * Note: any columns that were marked with lazyLoad="true" in the
-     * XML schema will not be added to the select list and only loaded
-     * on demand.
-     *
-     * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
-    {
-        if (null === $alias) {
-            $criteria->addSelectColumn(UserTableMap::COL_ID);
-            $criteria->addSelectColumn(UserTableMap::COL_FIRST_NAME);
-            $criteria->addSelectColumn(UserTableMap::COL_LAST_NAME);
-            $criteria->addSelectColumn(UserTableMap::COL_EMAIL);
-            $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
-            $criteria->addSelectColumn(UserTableMap::COL_PHONE_NUMBER);
-            $criteria->addSelectColumn(UserTableMap::COL_ROLE);
-            $criteria->addSelectColumn(UserTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(UserTableMap::COL_UPDATED_AT);
-        } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.first_name');
-            $criteria->addSelectColumn($alias . '.last_name');
-            $criteria->addSelectColumn($alias . '.email');
-            $criteria->addSelectColumn($alias . '.password');
-            $criteria->addSelectColumn($alias . '.phone_number');
-            $criteria->addSelectColumn($alias . '.role');
-            $criteria->addSelectColumn($alias . '.created_at');
-            $criteria->addSelectColumn($alias . '.updated_at');
-        }
-    }
-
-    /**
-     * Returns the TableMap related to this object.
-     * This method is not needed for general use but a specific application could have a need.
-     * @return TableMap
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
-    public static function getTableMap()
-    {
-        return Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME)->getTable(UserTableMap::TABLE_NAME);
-    }
-
-    /**
-     * Add a TableMap instance to the database for this tableMap class.
-     */
-    public static function buildTableMap()
-    {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(UserTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new UserTableMap());
-        }
-    }
-
-    /**
-     * Performs a DELETE on the database, given a User or Criteria object OR a primary key value.
-     *
-     * @param mixed               $values Criteria or User object or primary key or array of primary keys
-     *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
-        }
-
-        if ($values instanceof Criteria) {
-            // rename for clarity
-            $criteria = $values;
-        } elseif ($values instanceof \Code2be\Model\User) { // it's a model object
-            // create criteria based on pk values
-            $criteria = $values->buildPkeyCriteria();
-        } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(UserTableMap::DATABASE_NAME);
-            $criteria->add(UserTableMap::COL_ID, (array) $values, Criteria::IN);
-        }
-
-        $query = UserQuery::create()->mergeWith($criteria);
-
-        if ($values instanceof Criteria) {
-            UserTableMap::clearInstancePool();
-        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) {
-                UserTableMap::removeInstanceFromPool($singleval);
-            }
-        }
-
-        return $query->delete($con);
-    }
-
-    /**
-     * Deletes all rows from the user table.
-     *
-     * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).
-     */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
-        return UserQuery::create()->doDeleteAll($con);
-    }
-
-    /**
-     * Performs an INSERT on the database, given a User or Criteria object.
-     *
-     * @param mixed               $criteria Criteria or User object containing data that is used to create the INSERT statement.
-     * @param ConnectionInterface $con the ConnectionInterface connection to use
-     * @return mixed           The new primary key.
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
-        }
-
-        if ($criteria instanceof Criteria) {
-            $criteria = clone $criteria; // rename for clarity
-        } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from User object
-        }
-
-        if ($criteria->containsKey(UserTableMap::COL_ID) && $criteria->keyContainsValue(UserTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserTableMap::COL_ID.')');
-        }
-
-
-        // Set the correct dbName
-        $query = UserQuery::create()->mergeWith($criteria);
-
-        // use transaction because $criteria could contain info
-        // for more than one table (I guess, conceivably)
-        return $con->transaction(function () use ($con, $query) {
-            return $query->doInsert($con);
-        });
-    }
-
 } // UserTableMap
-// This is the static code needed to register the TableMap for this table with the main Propel class.
-//
-UserTableMap::buildTableMap();

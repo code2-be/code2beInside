@@ -69,7 +69,7 @@
         } else {
             foreach ($user->getValidationFailures() as $failure) {
                 $app->flashNow('error', 'Echec de la sauvegarde');
-                $errors[$failure->getPropertyPath()] = $failure->getMessage();
+                $errors[$failure->getColumn()] = $failure->getMessage();
             }
             echo $app->view->render(
                 'user.html.twig',

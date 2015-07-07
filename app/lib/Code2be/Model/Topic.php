@@ -2,7 +2,8 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\Base\Topic as BaseTopic;
+use Code2be\Model\om\BaseTopic;
+
 
 /**
  * Skeleton subclass for representing a row from the 'topic' table.
@@ -13,8 +14,8 @@ use Code2be\Model\Base\Topic as BaseTopic;
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
+ * @package    propel.generator.
  */
 class Topic extends BaseTopic
 {
-
 }

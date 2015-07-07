@@ -2,7 +2,8 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\Base\Comment as BaseComment;
+use Code2be\Model\om\BaseComment;
+
 
 /**
  * Skeleton subclass for representing a row from the 'comment' table.
@@ -13,8 +14,8 @@ use Code2be\Model\Base\Comment as BaseComment;
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
+ * @package    propel.generator.
  */
 class Comment extends BaseComment
 {
-
 }

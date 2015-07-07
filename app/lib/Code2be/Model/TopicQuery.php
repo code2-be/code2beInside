@@ -2,7 +2,8 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\Base\TopicQuery as BaseTopicQuery;
+use Code2be\Model\om\BaseTopicQuery;
+
 
 /**
  * Skeleton subclass for performing query and update operations on the 'topic' table.
@@ -13,8 +14,8 @@ use Code2be\Model\Base\TopicQuery as BaseTopicQuery;
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
+ * @package    propel.generator.
  */
 class TopicQuery extends BaseTopicQuery
 {
-
 }

@@ -2,11 +2,11 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\om\BaseUser;
+use Code2be\Model\om\BaseCommentPeer;
 
 
 /**
- * Skeleton subclass for representing a row from the 'user' table.
+ * Skeleton subclass for performing query and update operations on the 'comment' table.
  *
  *
  *
@@ -16,6 +16,6 @@ use Code2be\Model\om\BaseUser;
  *
  * @package    propel.generator.
  */
-class User extends BaseUser
+class CommentPeer extends BaseCommentPeer
 {
 }
