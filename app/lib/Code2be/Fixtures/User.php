@@ -6,11 +6,11 @@ class User {
 
     public static function load() {
         $user = new \Code2be\Model\User;
-        $user->setFirstName('Yoann');
-        $user->setLastName('C');
+        $user->setFirstName('Admin');
+        $user->setLastName('Foo');
         $user->setPassword(password_hash('p@ss', PASSWORD_BCRYPT));
-        $user->setEmail('yoann@c.be');
-        $user->setRole('ROLE_TREASURER');
+        $user->setEmail('admin@code2.be');
+        $user->setRole('ROLE_PRESIDENT');
         $user->save();
     }
 

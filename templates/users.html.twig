@@ -2,7 +2,10 @@
 
 {% block body %}
 
-<a href="{{ urlFor('user') }}" class="btn btn-primary">Nouveau Membre</a>
+{% if is_granted(['ROLE_TREASURER', 'ROLE_PRESIDENT']) %}
+  <a href="{{ urlFor('user') }}" class="btn btn-primary">Nouveau Membre</a>
+{% endif %}
+
 <br /><br />
 <div class="panel panel-default">
   <!-- Default panel contents -->
@@ -15,7 +18,9 @@
       <th>Prénom</th>
       <th>Mail</th>
       <th>Téléphone</th>
-      <th>&nbsp</th>
+      {% if is_granted(['ROLE_TREASURER', 'ROLE_PRESIDENT']) %}
+        <th>&nbsp</th>
+      {% endif %}
     </tr>
     {% for user in users %}
     <tr>
@@ -23,7 +28,9 @@
       <td>{{ user.firstName }}</td>
       <td>{{ user.email }}</td>
       <td>{{ user.phoneNumber }}</td>
-      <td><a href="{{ urlFor('user', {'id':user.id}) }}"><i class="fa fa-pencil-square-o"></i></a></td>
+      {% if is_granted(['ROLE_TREASURER', 'ROLE_PRESIDENT']) %}
+        <td><a href="{{ urlFor('user', {'id':user.id}) }}"><i class="fa fa-pencil-square-o"></i></a></td>
+      {% endif %}
     </tr>
     {% endfor %}
   </table>
