@@ -39,11 +39,10 @@ class Auth
         return $user;
     }
 
-    public static function generatePassword($user) {
+    public static function generatePassword(&$user) {
 
         $pass = self::getNewPassword();
         $user->setPassword(password_hash($pass, PASSWORD_BCRYPT));
-        $user->save();
         self::sendPasswordByMail($user, $pass);
     }
 

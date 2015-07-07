@@ -72,8 +72,8 @@
             $app->flash('success', 'Membre sauvegardé avec succès');
             $app->redirect('/user/'.$user->getId());
         } else {
+            $app->flashNow('error', 'Echec de la sauvegarde');
             foreach ($user->getValidationFailures() as $failure) {
-                $app->flashNow('error', 'Echec de la sauvegarde');
                 $errors[$failure->getColumn()] = $failure->getMessage();
             }
             echo $app->view->render(
