@@ -7,6 +7,8 @@ use Code2be\Model\User;
 
 class Auth
 {
+    private static $mailer = [];
+
     public static function login($post) {
         $user = UserQuery::create()
             ->findOneByEmail($post['email']);
@@ -43,7 +45,7 @@ class Auth
 
         $pass = self::getNewPassword();
         $user->setPassword(password_hash($pass, PASSWORD_BCRYPT));
-        self::sendPasswordByMail($user, $pass);
+        self::preparePasswordByMail($user, $pass);
     }
 
 
@@ -60,7 +62,7 @@ class Auth
         return $pass;
     }
 
-    public static function sendPasswordByMail($user, $pass) {
+    public static function preparePasswordByMail($user, $pass) {
         // Paramaters for database connections
         $parser = new \Symfony\Component\Yaml\Parser;
         $yaml   = $parser->parse(file_get_contents(__ROOT__.'/app/config/parameters.yml'));
@@ -87,7 +89,24 @@ A bientôt,
 L’Equipe Code2be Inside.
               ")
           ;
-        // Send the message
-        $result = $mailer->send($message);
+
+        self::$mailer[$user->getEmail()]['mailer']  = $mailer;
+        self::$mailer[$user->getEmail()]['message'] = $message;
+    }
+
+    public static function sendPasswordByMail($mail) {
+        if (!isset(self::$mailer[$mail])) {
+            throw new \Exception("Failed to find mailer password");
+        }
+        $message = self::$mailer[$mail]['message'];
+        self::$mailer[$mail]['mailer']->send($message);
+    }
+
+    public static function getAvailableRoles() {
+        return [
+            'ROLE_MEMBER'    => 'Membre',
+            'ROLE_TREASURER' => 'Trésorier',
+            'ROLE_PRESIDENT' => 'Président',
+        ];
     }
 }

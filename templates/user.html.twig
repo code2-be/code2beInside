@@ -10,109 +10,11 @@
 
 <form class="form-horizontal" method="post" action="{{ urlFor('user_post') }}">
   <input type="hidden" name="id" value="{{ user.id }}">
-  <div class="form-group {% if errors['user.first_name'] is defined %}has-error{% endif %}">
-    <label for="firstName" class="col-sm-2 control-label">Prénom</label>
-    <div class="col-sm-10">
-      <input
-        type="text"
-        class="form-control"
-        id="firstName"
-        name="firstName"
-        placeholder="Prénom"
-        value="{{ user.firstName }}" />
-        {% if errors['user.first_name'] is defined %}
-          <div class="alert alert-danger" role="alert">
-            <span class="fa fa-exclamation" aria-hidden="true"></span>
-            <span class="sr-only">Erreur:</span>
-            {{ errors['user.first_name'] }}
-          </div>
-        {% endif %}
-    </div>
-  </div>
-  <div class="form-group {% if errors['user.last_name'] is defined %}has-error{% endif %}">
-    <label for="lastName" class="col-sm-2 control-label">Nom</label>
-    <div class="col-sm-10">
-      <input
-        type="text"
-        class="form-control"
-        id="lastName"
-        name="lastName"
-        placeholder="Nom"
-        value="{{ user.lastName }}" />
-        {% if errors['user.last_name'] is defined %}
-          <div class="alert alert-danger" role="alert">
-            <span class="fa fa-exclamation" aria-hidden="true"></span>
-            <span class="sr-only">Erreur:</span>
-            {{ errors['user.last_name'] }}
-          </div>
-        {% endif %}
-    </div>
-  </div>
-  <div class="form-group {% if errors['user.email'] is defined %}has-error{% endif %}">
-    <label for="email" class="col-sm-2 control-label">E-mail</label>
-    <div class="col-sm-10">
-      <input
-        type="email"
-        class="form-control"
-        id="email"
-        name="email"
-        placeholder="E-mail"
-        value="{{ user.email }}" />
-        {% if errors['user.email'] is defined %}
-          <div class="alert alert-danger" role="alert">
-            <span class="fa fa-exclamation" aria-hidden="true"></span>
-            <span class="sr-only">Erreur:</span>
-            {{ errors['user.email'] }}
-          </div>
-        {% endif %}
-    </div>
-  </div>
-  <div class="form-group {% if errors['user.phone_number'] is defined %}has-error{% endif %}">
-    <label for="phoneNumber" class="col-sm-2 control-label">Téléphone</label>
-    <div class="col-sm-10">
-      <input
-        type="text"
-        class="form-control"
-        id="phoneNumber"
-        name="phoneNumber"
-        placeholder="Téléphone"
-        value="{{ user.phoneNumber }}" />
-        {% if errors['user.phone_number'] is defined %}
-          <div class="alert alert-danger" role="alert">
-            <span class="fa fa-exclamation" aria-hidden="true"></span>
-            <span class="sr-only">Erreur:</span>
-            {{ errors['user.phone_number'] }}
-          </div>
-        {% endif %}
-    </div>
-  </div>
-  <div class="form-group {% if errors['user.role'] is defined %}has-error{% endif %}">
-    <label for="role" class="col-sm-2 control-label">Rôle</label>
-    <div class="col-sm-10">
-      <select id="role" name="role" class="form-control">
-        <option
-          {% if user.role == 'ROLE_MEMBER' %}selected{% endif %}
-          value="ROLE_MEMBER">
-          Membre
-        </option>
-        <option
-          {% if user.role == 'ROLE_TREASURER' %}selected{% endif %}
-          value="ROLE_TREASURER">
-          Trésorier</option>
-        <option
-          {% if user.role == 'ROLE_PRESIDENT' %}selected{% endif %}
-          value="ROLE_PRESIDENT">
-          Président</option>
-      </select>
-        {% if errors['user.role'] is defined %}
-          <div class="alert alert-danger" role="alert">
-            <span class="fa fa-exclamation" aria-hidden="true"></span>
-            <span class="sr-only">Erreur:</span>
-            {{ errors['user.role'] }}
-          </div>
-        {% endif %}
-    </div>
-  </div>
+  {{ input_tag('firstName', 'Prénom', user.firstName, errors, 'user.first_name') }}
+  {{ input_tag('lastName', 'Nom', user.lastName, errors, 'user.last_name') }}
+  {{ input_tag_mail('email', 'E-mail', user.email, errors, 'user.email') }}
+  {{ input_tag('phoneNumber', 'Téléphone', user.phoneNumber, errors, 'user.phone_number') }}
+  {{ select_tag('role', 'Rôle', roles, user.role, errors, 'user.phone_number') }}
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <div class="checkbox">

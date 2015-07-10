@@ -18,4 +18,23 @@ use Code2be\Model\om\BaseUser;
  */
 class User extends BaseUser
 {
+    private $sendMail = false;
+
+    public function preSave(\PropelPDO $con = NULL) {
+        if (
+            $this->isColumnModified(\Code2be\Model\UserPeer::PASSWORD) &&
+            $this->password != ''
+        ) {
+            $this->sendMail = true;
+        }
+        return true;
+    }
+
+
+    public function postSave(\PropelPDO $con = NULL) {
+        if ($this->sendMail) {
+            \Code2be\Helper\Auth::sendPasswordByMail($this->getEmail());
+        }
+        return true;
+    }
 }

@@ -26,7 +26,7 @@ $view->parserExtensions = array(
 $app->view = $view;
 
 $twig = $app->view->getEnvironment();
-$twig->addExtension(new \Code2be\Twig\Extension);
+$twig->addExtension(new \Code2be\Twig\Extension($twig));
 
 // Include the main Propel script
 require_once __ROOT__.'/app/vendor/propel/propel1/runtime/lib/Propel.php';

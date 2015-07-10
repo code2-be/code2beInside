@@ -1,0 +1,21 @@
+<div class="form-group {% if errors[columnName] is defined %}has-error{% endif %}">
+  <label for="{{phpName}}" class="col-sm-2 control-label">{{label}}</label>
+  <div class="col-sm-10">
+    <select id="{{phpName}}" name="{{phpName}}" class="form-control">
+      {% for value, label in choices %}
+      <option
+        {% if value == selected %}selected{% endif %}
+        value="{{value}}">
+        {{label}}
+      </option>
+      {% endfor %}
+    </select>
+      {% if errors[columnName] is defined %}
+        <div class="alert alert-danger" role="alert">
+          <span class="fa fa-exclamation" aria-hidden="true"></span>
+          <span class="sr-only">Erreur:</span>
+          {{ errors[columnName] }}
+        </div>
+      {% endif %}
+  </div>
+</div>

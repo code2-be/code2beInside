@@ -1,87 +1,11 @@
 <?php
-    use Code2be\Model\UserQuery;
-    use Code2be\Model\User;
-    use Code2be\Helper\Form;
-    use Code2be\Helper\Voter;
-
     $app->get('/', function() use ($app) {
         echo $app->view->render('homepage.html.twig', ['active' => 'homepage']);
     })->name('homepage');
 
-    $app->get('/login', function() use ($app) {
-        echo $app->view->render('login.html.twig', ['active' => 'homepage']);
-    })->name('login');
+    require_once __ROOT__.'/app/routes/security.php';
+    require_once __ROOT__.'/app/routes/users.php';
 
-    $app->get('/logout', function() use ($app) {
-        \Code2be\Helper\Auth::logout();
-        $app->redirect('/');
-    })->name('logout');
-
-    $app->post('/login', function() use ($app) {
-        $post = $app->request->post();
-        if (!\Code2be\Helper\Auth::login($post)) {
-            $app->flash('error', 'Mauvais login ou mot de passe');
-        }
-        $app->redirect('/');
-    })->name('login_post');
-
-    $app->get('/users', function() use ($app) {
-        $users = UserQuery::create()
-            ->orderByLastName()
-            ->find();
-        echo $app->view->render(
-            'users.html.twig',
-            ['users'=>$users, 'active' => 'users']
-        );
-    })->name('users');
-
-    $app->get('/user(/:id)', function($id = null) use ($app) {
-        if (is_null($id)) {
-            $user = new User();
-        } else {
-            $user = UserQuery::create()
-                ->findPk($id);
-            if (is_null($user)) {
-                $app->notFound();
-            }
-        }
-
-        echo $app->view->render(
-            'user.html.twig',
-            ['user'=>$user, 'active' => 'users']
-        );
-    })->name('user');
-
-    $app->post('/user', function() use ($app) {
-        if (!Voter::isGranted(['ROLE_PRESIDENT', 'ROLE_TREASURER'])) {
-            $app->halt(403, 'Not enough rights !');
-        }
-
-        $post = $app->request->post();
-        $user = UserQuery::findOrCreate($post['id']);
-        if (is_null($user)) {
-            $app->notFound();
-        }
-        Form::handleRequest($post, $user);
-        $errors = [];
-        if ($user->validate()) {
-            if (isset($post['generatePassword']) && !empty($post['generatePassword'])) {
-                \Code2be\Helper\Auth::generatePassword($user);
-            }
-            $user->save();
-            $app->flash('success', 'Membre sauvegardé avec succès');
-            $app->redirect('/user/'.$user->getId());
-        } else {
-            $app->flashNow('error', 'Echec de la sauvegarde');
-            foreach ($user->getValidationFailures() as $failure) {
-                $errors[$failure->getColumn()] = $failure->getMessage();
-            }
-            echo $app->view->render(
-                'user.html.twig',
-                ['user'=>$user, 'active' => 'users', 'errors' => $errors]
-            );
-        }
-    })->name('user_post');
 
     $app->get('/ideabox', function() use ($app) {
         echo $app->view->render('ideaBox.html.twig', ['active' => 'ideaBox']);
