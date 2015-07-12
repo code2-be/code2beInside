@@ -4,3 +4,7 @@
 .navbar-right>.logout a {
   padding: 0px;
 }
+
+table.thread tr {
+  cursor: pointer;
+}

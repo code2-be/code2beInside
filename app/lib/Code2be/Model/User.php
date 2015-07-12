@@ -23,7 +23,8 @@ class User extends BaseUser
     public function preSave(\PropelPDO $con = NULL) {
         if (
             $this->isColumnModified(\Code2be\Model\UserPeer::PASSWORD) &&
-            $this->password != ''
+            $this->password != '' &&
+            \Code2be\Helper\Auth::mailerPasswordExists($this->getEmail())
         ) {
             $this->sendMail = true;
         }

@@ -37,7 +37,9 @@ class Auth
      */
     public static function getUser() {
         $user = new User();
-        $user->fromJSON($_SESSION['user']);
+        if (!empty($_SESSION['user'])) {
+            $user->fromJSON($_SESSION['user']);
+        }
         return $user;
     }
 
@@ -72,6 +74,8 @@ class Auth
           ->setPassword($yaml['mailer']['password'])
         ;
 
+        $url =
+
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
 
@@ -85,13 +89,21 @@ Voici votre mot de passe membre Code2be Inside !
 
 $pass
 
-A bientôt,
-L’Equipe Code2be Inside.
+A bientôt sur $url,
+L’Equipe Code2be.
               ")
           ;
 
         self::$mailer[$user->getEmail()]['mailer']  = $mailer;
         self::$mailer[$user->getEmail()]['message'] = $message;
+    }
+
+    public static function mailerPasswordExists($mail) {
+        if (isset(self::$mailer[$mail])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function sendPasswordByMail($mail) {

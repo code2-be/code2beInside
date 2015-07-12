@@ -9,82 +9,69 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
-use Code2be\Model\User;
+use Code2be\Model\PostPeer;
+use Code2be\Model\Thread;
+use Code2be\Model\ThreadPeer;
 use Code2be\Model\UserPeer;
-use Code2be\Model\map\UserTableMap;
+use Code2be\Model\map\ThreadTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'user' table.
+ * Base static class for performing query and update operations on the 'thread' table.
  *
  *
  *
  * @package propel.generator..om
  */
-abstract class BaseUserPeer
+abstract class BaseThreadPeer
 {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'code2be';
 
     /** the table name for this class */
-    const TABLE_NAME = 'user';
+    const TABLE_NAME = 'thread';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'Code2be\\Model\\User';
+    const OM_CLASS = 'Code2be\\Model\\Thread';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'Code2be\\Model\\map\\UserTableMap';
+    const TM_CLASS = 'Code2be\\Model\\map\\ThreadTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 6;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /** the column name for the id field */
-    const ID = 'user.id';
+    const ID = 'thread.id';
 
-    /** the column name for the first_name field */
-    const FIRST_NAME = 'user.first_name';
-
-    /** the column name for the last_name field */
-    const LAST_NAME = 'user.last_name';
-
-    /** the column name for the email field */
-    const EMAIL = 'user.email';
-
-    /** the column name for the password field */
-    const PASSWORD = 'user.password';
-
-    /** the column name for the phone_number field */
-    const PHONE_NUMBER = 'user.phone_number';
-
-    /** the column name for the role field */
-    const ROLE = 'user.role';
+    /** the column name for the title field */
+    const TITLE = 'thread.title';
 
     /** the column name for the created_by field */
-    const CREATED_BY = 'user.created_by';
+    const CREATED_BY = 'thread.created_by';
 
     /** the column name for the updated_by field */
-    const UPDATED_BY = 'user.updated_by';
+    const UPDATED_BY = 'thread.updated_by';
 
     /** the column name for the created_at field */
-    const CREATED_AT = 'user.created_at';
+    const CREATED_AT = 'thread.created_at';
 
     /** the column name for the updated_at field */
-    const UPDATED_AT = 'user.updated_at';
+    const UPDATED_AT = 'thread.updated_at';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identity map to hold any loaded instances of User objects.
+     * An identity map to hold any loaded instances of Thread objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array User[]
+     * @var        array Thread[]
      */
     public static $instances = array();
 
@@ -93,30 +80,30 @@ abstract class BaseUserPeer
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. UserPeer::$fieldNames[UserPeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. ThreadPeer::$fieldNames[ThreadPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'FirstName', 'LastName', 'Email', 'Password', 'PhoneNumber', 'Role', 'CreatedBy', 'UpdatedBy', 'CreatedAt', 'UpdatedAt', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'role', 'createdBy', 'updatedBy', 'createdAt', 'updatedAt', ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::FIRST_NAME, UserPeer::LAST_NAME, UserPeer::EMAIL, UserPeer::PASSWORD, UserPeer::PHONE_NUMBER, UserPeer::ROLE, UserPeer::CREATED_BY, UserPeer::UPDATED_BY, UserPeer::CREATED_AT, UserPeer::UPDATED_AT, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'FIRST_NAME', 'LAST_NAME', 'EMAIL', 'PASSWORD', 'PHONE_NUMBER', 'ROLE', 'CREATED_BY', 'UPDATED_BY', 'CREATED_AT', 'UPDATED_AT', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'first_name', 'last_name', 'email', 'password', 'phone_number', 'role', 'created_by', 'updated_by', 'created_at', 'updated_at', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Title', 'CreatedBy', 'UpdatedBy', 'CreatedAt', 'UpdatedAt', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'title', 'createdBy', 'updatedBy', 'createdAt', 'updatedAt', ),
+        BasePeer::TYPE_COLNAME => array (ThreadPeer::ID, ThreadPeer::TITLE, ThreadPeer::CREATED_BY, ThreadPeer::UPDATED_BY, ThreadPeer::CREATED_AT, ThreadPeer::UPDATED_AT, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'TITLE', 'CREATED_BY', 'UPDATED_BY', 'CREATED_AT', 'UPDATED_AT', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'title', 'created_by', 'updated_by', 'created_at', 'updated_at', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
     );
 
     /**
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. UserPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. ThreadPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'Password' => 4, 'PhoneNumber' => 5, 'Role' => 6, 'CreatedBy' => 7, 'UpdatedBy' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'password' => 4, 'phoneNumber' => 5, 'role' => 6, 'createdBy' => 7, 'updatedBy' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::FIRST_NAME => 1, UserPeer::LAST_NAME => 2, UserPeer::EMAIL => 3, UserPeer::PASSWORD => 4, UserPeer::PHONE_NUMBER => 5, UserPeer::ROLE => 6, UserPeer::CREATED_BY => 7, UserPeer::UPDATED_BY => 8, UserPeer::CREATED_AT => 9, UserPeer::UPDATED_AT => 10, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'FIRST_NAME' => 1, 'LAST_NAME' => 2, 'EMAIL' => 3, 'PASSWORD' => 4, 'PHONE_NUMBER' => 5, 'ROLE' => 6, 'CREATED_BY' => 7, 'UPDATED_BY' => 8, 'CREATED_AT' => 9, 'UPDATED_AT' => 10, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password' => 4, 'phone_number' => 5, 'role' => 6, 'created_by' => 7, 'updated_by' => 8, 'created_at' => 9, 'updated_at' => 10, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Title' => 1, 'CreatedBy' => 2, 'UpdatedBy' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'title' => 1, 'createdBy' => 2, 'updatedBy' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        BasePeer::TYPE_COLNAME => array (ThreadPeer::ID => 0, ThreadPeer::TITLE => 1, ThreadPeer::CREATED_BY => 2, ThreadPeer::UPDATED_BY => 3, ThreadPeer::CREATED_AT => 4, ThreadPeer::UPDATED_AT => 5, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'TITLE' => 1, 'CREATED_BY' => 2, 'UPDATED_BY' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'title' => 1, 'created_by' => 2, 'updated_by' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -131,10 +118,10 @@ abstract class BaseUserPeer
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = UserPeer::getFieldNames($toType);
-        $key = isset(UserPeer::$fieldKeys[$fromType][$name]) ? UserPeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = ThreadPeer::getFieldNames($toType);
+        $key = isset(ThreadPeer::$fieldKeys[$fromType][$name]) ? ThreadPeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(UserPeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(ThreadPeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -151,11 +138,11 @@ abstract class BaseUserPeer
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, UserPeer::$fieldNames)) {
+        if (!array_key_exists($type, ThreadPeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return UserPeer::$fieldNames[$type];
+        return ThreadPeer::$fieldNames[$type];
     }
 
     /**
@@ -167,12 +154,12 @@ abstract class BaseUserPeer
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. UserPeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. ThreadPeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(UserPeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(ThreadPeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -190,25 +177,15 @@ abstract class BaseUserPeer
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserPeer::ID);
-            $criteria->addSelectColumn(UserPeer::FIRST_NAME);
-            $criteria->addSelectColumn(UserPeer::LAST_NAME);
-            $criteria->addSelectColumn(UserPeer::EMAIL);
-            $criteria->addSelectColumn(UserPeer::PASSWORD);
-            $criteria->addSelectColumn(UserPeer::PHONE_NUMBER);
-            $criteria->addSelectColumn(UserPeer::ROLE);
-            $criteria->addSelectColumn(UserPeer::CREATED_BY);
-            $criteria->addSelectColumn(UserPeer::UPDATED_BY);
-            $criteria->addSelectColumn(UserPeer::CREATED_AT);
-            $criteria->addSelectColumn(UserPeer::UPDATED_AT);
+            $criteria->addSelectColumn(ThreadPeer::ID);
+            $criteria->addSelectColumn(ThreadPeer::TITLE);
+            $criteria->addSelectColumn(ThreadPeer::CREATED_BY);
+            $criteria->addSelectColumn(ThreadPeer::UPDATED_BY);
+            $criteria->addSelectColumn(ThreadPeer::CREATED_AT);
+            $criteria->addSelectColumn(ThreadPeer::UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.first_name');
-            $criteria->addSelectColumn($alias . '.last_name');
-            $criteria->addSelectColumn($alias . '.email');
-            $criteria->addSelectColumn($alias . '.password');
-            $criteria->addSelectColumn($alias . '.phone_number');
-            $criteria->addSelectColumn($alias . '.role');
+            $criteria->addSelectColumn($alias . '.title');
             $criteria->addSelectColumn($alias . '.created_by');
             $criteria->addSelectColumn($alias . '.updated_by');
             $criteria->addSelectColumn($alias . '.created_at');
@@ -232,21 +209,21 @@ abstract class BaseUserPeer
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(UserPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            UserPeer::addSelectColumns($criteria);
+            ThreadPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(UserPeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -265,7 +242,7 @@ abstract class BaseUserPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return User
+     * @return Thread
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -273,7 +250,7 @@ abstract class BaseUserPeer
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = UserPeer::doSelect($critcopy, $con);
+        $objects = ThreadPeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -291,7 +268,7 @@ abstract class BaseUserPeer
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return UserPeer::populateObjects(UserPeer::doSelectStmt($criteria, $con));
+        return ThreadPeer::populateObjects(ThreadPeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -309,16 +286,16 @@ abstract class BaseUserPeer
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            UserPeer::addSelectColumns($criteria);
+            ThreadPeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -332,7 +309,7 @@ abstract class BaseUserPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param User $obj A User object.
+     * @param Thread $obj A Thread object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -341,7 +318,7 @@ abstract class BaseUserPeer
             if ($key === null) {
                 $key = (string) $obj->getId();
             } // if key === null
-            UserPeer::$instances[$key] = $obj;
+            ThreadPeer::$instances[$key] = $obj;
         }
     }
 
@@ -353,7 +330,7 @@ abstract class BaseUserPeer
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A User object or a primary key value.
+     * @param      mixed $value A Thread object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -361,17 +338,17 @@ abstract class BaseUserPeer
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof User) {
+            if (is_object($value) && $value instanceof Thread) {
                 $key = (string) $value->getId();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or User object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Thread object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(UserPeer::$instances[$key]);
+            unset(ThreadPeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -382,14 +359,14 @@ abstract class BaseUserPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return User Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return Thread Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(UserPeer::$instances[$key])) {
-                return UserPeer::$instances[$key];
+            if (isset(ThreadPeer::$instances[$key])) {
+                return ThreadPeer::$instances[$key];
             }
         }
 
@@ -404,19 +381,22 @@ abstract class BaseUserPeer
     public static function clearInstancePool($and_clear_all_references = false)
     {
       if ($and_clear_all_references) {
-        foreach (UserPeer::$instances as $instance) {
+        foreach (ThreadPeer::$instances as $instance) {
           $instance->clearAllReferences(true);
         }
       }
-        UserPeer::$instances = array();
+        ThreadPeer::$instances = array();
     }
 
     /**
-     * Method to invalidate the instance pool of all tables related to user
+     * Method to invalidate the instance pool of all tables related to thread
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
     {
+        // Invalidate objects in PostPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        PostPeer::clearInstancePool();
     }
 
     /**
@@ -466,11 +446,11 @@ abstract class BaseUserPeer
         $results = array();
 
         // set the class once to avoid overhead in the loop
-        $cls = UserPeer::getOMClass();
+        $cls = ThreadPeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = UserPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = UserPeer::getInstanceFromPool($key))) {
+            $key = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = ThreadPeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -479,7 +459,7 @@ abstract class BaseUserPeer
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                UserPeer::addInstanceToPool($obj, $key);
+                ThreadPeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -493,24 +473,260 @@ abstract class BaseUserPeer
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (User object, last column rank)
+     * @return array (Thread object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = UserPeer::getInstanceFromPool($key))) {
+        $key = ThreadPeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = ThreadPeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + UserPeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + ThreadPeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = UserPeer::OM_CLASS;
+            $cls = ThreadPeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            UserPeer::addInstanceToPool($obj, $key);
+            ThreadPeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related UserRelatedByCreatedBy table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinUserRelatedByCreatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ThreadPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ThreadPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related UserRelatedByUpdatedBy table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinUserRelatedByUpdatedBy(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ThreadPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ThreadPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Selects a collection of Thread objects pre-filled with their User objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Thread objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinUserRelatedByCreatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ThreadPeer::DATABASE_NAME);
+        }
+
+        ThreadPeer::addSelectColumns($criteria);
+        $startcol = ThreadPeer::NUM_HYDRATE_COLUMNS;
+        UserPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ThreadPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ThreadPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ThreadPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ThreadPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = UserPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UserPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    UserPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Thread) to $obj2 (User)
+                $obj2->addThreadRelatedByCreatedBy($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Thread objects pre-filled with their User objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Thread objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinUserRelatedByUpdatedBy(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ThreadPeer::DATABASE_NAME);
+        }
+
+        ThreadPeer::addSelectColumns($criteria);
+        $startcol = ThreadPeer::NUM_HYDRATE_COLUMNS;
+        UserPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ThreadPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ThreadPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ThreadPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ThreadPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = UserPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UserPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    UserPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Thread) to $obj2 (User)
+                $obj2->addThreadRelatedByUpdatedBy($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
     }
 
 
@@ -531,24 +747,28 @@ abstract class BaseUserPeer
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(UserPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            UserPeer::addSelectColumns($criteria);
+            ThreadPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
+
+        $criteria->addJoin(ThreadPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(ThreadPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -563,12 +783,12 @@ abstract class BaseUserPeer
     }
 
     /**
-     * Selects a collection of User objects pre-filled with all related objects.
+     * Selects a collection of Thread objects pre-filled with all related objects.
      *
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-     * @return array           Array of User objects.
+     * @return array           Array of Thread objects.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -578,28 +798,74 @@ abstract class BaseUserPeer
 
         // Set the correct dbName if it has not been overridden
         if ($criteria->getDbName() == Propel::getDefaultDB()) {
-            $criteria->setDbName(UserPeer::DATABASE_NAME);
+            $criteria->setDbName(ThreadPeer::DATABASE_NAME);
         }
 
+        ThreadPeer::addSelectColumns($criteria);
+        $startcol2 = ThreadPeer::NUM_HYDRATE_COLUMNS;
+
         UserPeer::addSelectColumns($criteria);
-        $startcol2 = UserPeer::NUM_HYDRATE_COLUMNS;
+        $startcol3 = $startcol2 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ThreadPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(ThreadPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
 
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key1 = UserPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj1 = UserPeer::getInstanceFromPool($key1))) {
+            $key1 = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ThreadPeer::getInstanceFromPool($key1))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj1->hydrate($row, 0, true); // rehydrate
             } else {
-                $cls = UserPeer::getOMClass();
+                $cls = ThreadPeer::getOMClass();
 
                 $obj1 = new $cls();
                 $obj1->hydrate($row);
-                UserPeer::addInstanceToPool($obj1, $key1);
+                ThreadPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
+
+            // Add objects for joined User rows
+
+            $key2 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UserPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UserPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    UserPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 loaded
+
+                // Add the $obj1 (Thread) to the collection in $obj2 (User)
+                $obj2->addThreadRelatedByCreatedBy($obj1);
+            } // if joined row not null
+
+            // Add objects for joined User rows
+
+            $key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = UserPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = UserPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    UserPeer::addInstanceToPool($obj3, $key3);
+                } // if obj3 loaded
+
+                // Add the $obj1 (Thread) to the collection in $obj3 (User)
+                $obj3->addThreadRelatedByUpdatedBy($obj1);
+            } // if joined row not null
 
             $results[] = $obj1;
         }
@@ -626,23 +892,23 @@ abstract class BaseUserPeer
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(UserPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            UserPeer::addSelectColumns($criteria);
+            ThreadPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY should not affect count
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -675,23 +941,23 @@ abstract class BaseUserPeer
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(UserPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            UserPeer::addSelectColumns($criteria);
+            ThreadPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY should not affect count
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -708,12 +974,12 @@ abstract class BaseUserPeer
 
 
     /**
-     * Selects a collection of User objects pre-filled with all related objects except UserRelatedByCreatedBy.
+     * Selects a collection of Thread objects pre-filled with all related objects except UserRelatedByCreatedBy.
      *
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-     * @return array           Array of User objects.
+     * @return array           Array of Thread objects.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -725,28 +991,28 @@ abstract class BaseUserPeer
         // $criteria->getDbName() will return the same object if not set to another value
         // so == check is okay and faster
         if ($criteria->getDbName() == Propel::getDefaultDB()) {
-            $criteria->setDbName(UserPeer::DATABASE_NAME);
+            $criteria->setDbName(ThreadPeer::DATABASE_NAME);
         }
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol2 = UserPeer::NUM_HYDRATE_COLUMNS;
+        ThreadPeer::addSelectColumns($criteria);
+        $startcol2 = ThreadPeer::NUM_HYDRATE_COLUMNS;
 
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
 
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key1 = UserPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj1 = UserPeer::getInstanceFromPool($key1))) {
+            $key1 = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ThreadPeer::getInstanceFromPool($key1))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj1->hydrate($row, 0, true); // rehydrate
             } else {
-                $cls = UserPeer::getOMClass();
+                $cls = ThreadPeer::getOMClass();
 
                 $obj1 = new $cls();
                 $obj1->hydrate($row);
-                UserPeer::addInstanceToPool($obj1, $key1);
+                ThreadPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
             $results[] = $obj1;
@@ -758,12 +1024,12 @@ abstract class BaseUserPeer
 
 
     /**
-     * Selects a collection of User objects pre-filled with all related objects except UserRelatedByUpdatedBy.
+     * Selects a collection of Thread objects pre-filled with all related objects except UserRelatedByUpdatedBy.
      *
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-     * @return array           Array of User objects.
+     * @return array           Array of Thread objects.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -775,28 +1041,28 @@ abstract class BaseUserPeer
         // $criteria->getDbName() will return the same object if not set to another value
         // so == check is okay and faster
         if ($criteria->getDbName() == Propel::getDefaultDB()) {
-            $criteria->setDbName(UserPeer::DATABASE_NAME);
+            $criteria->setDbName(ThreadPeer::DATABASE_NAME);
         }
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol2 = UserPeer::NUM_HYDRATE_COLUMNS;
+        ThreadPeer::addSelectColumns($criteria);
+        $startcol2 = ThreadPeer::NUM_HYDRATE_COLUMNS;
 
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
 
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key1 = UserPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj1 = UserPeer::getInstanceFromPool($key1))) {
+            $key1 = ThreadPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ThreadPeer::getInstanceFromPool($key1))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj1->hydrate($row, 0, true); // rehydrate
             } else {
-                $cls = UserPeer::getOMClass();
+                $cls = ThreadPeer::getOMClass();
 
                 $obj1 = new $cls();
                 $obj1->hydrate($row);
-                UserPeer::addInstanceToPool($obj1, $key1);
+                ThreadPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
             $results[] = $obj1;
@@ -815,7 +1081,7 @@ abstract class BaseUserPeer
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(UserPeer::DATABASE_NAME)->getTable(UserPeer::TABLE_NAME);
+        return Propel::getDatabaseMap(ThreadPeer::DATABASE_NAME)->getTable(ThreadPeer::TABLE_NAME);
     }
 
     /**
@@ -823,9 +1089,9 @@ abstract class BaseUserPeer
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseUserPeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseUserPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new \Code2be\Model\map\UserTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseThreadPeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseThreadPeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new \Code2be\Model\map\ThreadTableMap());
       }
     }
 
@@ -837,13 +1103,13 @@ abstract class BaseUserPeer
      */
     public static function getOMClass($row = 0, $colnum = 0)
     {
-        return UserPeer::OM_CLASS;
+        return ThreadPeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a User or Criteria object.
+     * Performs an INSERT on the database, given a Thread or Criteria object.
      *
-     * @param      mixed $values Criteria or User object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or Thread object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -852,22 +1118,22 @@ abstract class BaseUserPeer
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from User object
+            $criteria = $values->buildCriteria(); // build Criteria from Thread object
         }
 
-        if ($criteria->containsKey(UserPeer::ID) && $criteria->keyContainsValue(UserPeer::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserPeer::ID.')');
+        if ($criteria->containsKey(ThreadPeer::ID) && $criteria->keyContainsValue(ThreadPeer::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ThreadPeer::ID.')');
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -884,9 +1150,9 @@ abstract class BaseUserPeer
     }
 
     /**
-     * Performs an UPDATE on the database, given a User or Criteria object.
+     * Performs an UPDATE on the database, given a Thread or Criteria object.
      *
-     * @param      mixed $values Criteria or User object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or Thread object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -895,35 +1161,35 @@ abstract class BaseUserPeer
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(ThreadPeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(UserPeer::ID);
-            $value = $criteria->remove(UserPeer::ID);
+            $comparison = $criteria->getComparison(ThreadPeer::ID);
+            $value = $criteria->remove(ThreadPeer::ID);
             if ($value) {
-                $selectCriteria->add(UserPeer::ID, $value, $comparison);
+                $selectCriteria->add(ThreadPeer::ID, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(UserPeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(ThreadPeer::TABLE_NAME);
             }
 
-        } else { // $values is User object
+        } else { // $values is Thread object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the user table.
+     * Deletes all rows from the thread table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -932,19 +1198,20 @@ abstract class BaseUserPeer
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(UserPeer::TABLE_NAME, $con, UserPeer::DATABASE_NAME);
+            $affectedRows += ThreadPeer::doOnDeleteCascade(new Criteria(ThreadPeer::DATABASE_NAME), $con);
+            $affectedRows += BasePeer::doDeleteAll(ThreadPeer::TABLE_NAME, $con, ThreadPeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            UserPeer::clearInstancePool();
-            UserPeer::clearRelatedInstancePool();
+            ThreadPeer::clearInstancePool();
+            ThreadPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -955,9 +1222,9 @@ abstract class BaseUserPeer
     }
 
     /**
-     * Performs a DELETE on the database, given a User or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Thread or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or User object or primary key or array of primary keys
+     * @param      mixed $values Criteria or Thread object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -968,32 +1235,22 @@ abstract class BaseUserPeer
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
-            // invalidate the cache for all objects of this type, since we have no
-            // way of knowing (without running a query) what objects should be invalidated
-            // from the cache based on this Criteria.
-            UserPeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof User) { // it's a model object
-            // invalidate the cache for this single object
-            UserPeer::removeInstanceFromPool($values);
+        } elseif ($values instanceof Thread) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(UserPeer::DATABASE_NAME);
-            $criteria->add(UserPeer::ID, (array) $values, Criteria::IN);
-            // invalidate the cache for this object(s)
-            foreach ((array) $values as $singleval) {
-                UserPeer::removeInstanceFromPool($singleval);
-            }
+            $criteria = new Criteria(ThreadPeer::DATABASE_NAME);
+            $criteria->add(ThreadPeer::ID, (array) $values, Criteria::IN);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(UserPeer::DATABASE_NAME);
+        $criteria->setDbName(ThreadPeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -1002,8 +1259,25 @@ abstract class BaseUserPeer
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
 
+            // cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+            $c = clone $criteria;
+            $affectedRows += ThreadPeer::doOnDeleteCascade($c, $con);
+
+            // Because this db requires some delete cascade/set null emulation, we have to
+            // clear the cached instance *after* the emulation has happened (since
+            // instances get re-added by the select statement contained therein).
+            if ($values instanceof Criteria) {
+                ThreadPeer::clearInstancePool();
+            } elseif ($values instanceof Thread) { // it's a model object
+                ThreadPeer::removeInstanceFromPool($values);
+            } else { // it's a primary key, or an array of pks
+                foreach ((array) $values as $singleval) {
+                    ThreadPeer::removeInstanceFromPool($singleval);
+                }
+            }
+
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            UserPeer::clearRelatedInstancePool();
+            ThreadPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -1014,13 +1288,46 @@ abstract class BaseUserPeer
     }
 
     /**
-     * Validates all modified columns of given User object.
+     * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
+     * feature (like MySQL or SQLite).
+     *
+     * This method is not very speedy because it must perform a query first to get
+     * the implicated records and then perform the deletes by calling those Peer classes.
+     *
+     * This method should be used within a transaction if possible.
+     *
+     * @param      Criteria $criteria
+     * @param      PropelPDO $con
+     * @return int The number of affected rows (if supported by underlying database driver).
+     */
+    protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
+    {
+        // initialize var to track total num of affected rows
+        $affectedRows = 0;
+
+        // first find the objects that are implicated by the $criteria
+        $objects = ThreadPeer::doSelect($criteria, $con);
+        foreach ($objects as $obj) {
+
+
+            // delete related Post objects
+            $criteria = new Criteria(PostPeer::DATABASE_NAME);
+
+            $criteria->add(PostPeer::THREAD_ID, $obj->getId());
+            $affectedRows += PostPeer::doDelete($criteria, $con);
+        }
+
+        return $affectedRows;
+    }
+
+    /**
+     * Validates all modified columns of given Thread object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param User $obj The object to validate.
+     * @param Thread $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1030,8 +1337,8 @@ abstract class BaseUserPeer
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(UserPeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(UserPeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(ThreadPeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(ThreadPeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -1045,27 +1352,12 @@ abstract class BaseUserPeer
             }
         } else {
 
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::FIRST_NAME))
-            $columns[UserPeer::FIRST_NAME] = $obj->getFirstName();
-
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::LAST_NAME))
-            $columns[UserPeer::LAST_NAME] = $obj->getLastName();
-
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::EMAIL))
-            $columns[UserPeer::EMAIL] = $obj->getEmail();
-
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::PASSWORD))
-            $columns[UserPeer::PASSWORD] = $obj->getPassword();
-
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::PHONE_NUMBER))
-            $columns[UserPeer::PHONE_NUMBER] = $obj->getPhoneNumber();
-
-        if ($obj->isNew() || $obj->isColumnModified(UserPeer::ROLE))
-            $columns[UserPeer::ROLE] = $obj->getRole();
+        if ($obj->isNew() || $obj->isColumnModified(ThreadPeer::TITLE))
+            $columns[ThreadPeer::TITLE] = $obj->getTitle();
 
         }
 
-        return BasePeer::doValidate(UserPeer::DATABASE_NAME, UserPeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(ThreadPeer::DATABASE_NAME, ThreadPeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -1073,23 +1365,23 @@ abstract class BaseUserPeer
      *
      * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return User
+     * @return Thread
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = UserPeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = ThreadPeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(UserPeer::DATABASE_NAME);
-        $criteria->add(UserPeer::ID, $pk);
+        $criteria = new Criteria(ThreadPeer::DATABASE_NAME);
+        $criteria->add(ThreadPeer::ID, $pk);
 
-        $v = UserPeer::doSelect($criteria, $con);
+        $v = ThreadPeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -1099,31 +1391,31 @@ abstract class BaseUserPeer
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return User[]
+     * @return Thread[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(UserPeer::DATABASE_NAME);
-            $criteria->add(UserPeer::ID, $pks, Criteria::IN);
-            $objs = UserPeer::doSelect($criteria, $con);
+            $criteria = new Criteria(ThreadPeer::DATABASE_NAME);
+            $criteria->add(ThreadPeer::ID, $pks, Criteria::IN);
+            $objs = ThreadPeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseUserPeer
+} // BaseThreadPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseUserPeer::buildTableMap();
+BaseThreadPeer::buildTableMap();
 

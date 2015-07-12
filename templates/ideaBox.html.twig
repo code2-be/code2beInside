@@ -2,5 +2,33 @@
 
 {% block body %}
 
+  <a href="{{ urlFor('thread') }}" class="btn btn-primary">Créer un sujet</a>
 
+<br /><br />
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Liste des sujets Code2be</div>
+
+  <!-- Table -->
+  <table class="table thread">
+    <tr>
+      <th>Sujet</th>
+      <th>Mis à jour</th>
+      <th>Par</th>
+      {% if is_granted(['ROLE_TREASURER', 'ROLE_PRESIDENT']) %}
+        <th>&nbsp</th>
+      {% endif %}
+    </tr>
+    {% for thread in threads %}
+    <tr data-path='{{ urlFor('posts', {id: thread.id}) }}'>
+      <td>{{ thread.title }}</td>
+      <td>{{ thread.updatedAt|date('d/m/Y H:i:s') }}</td>
+      <td>{{thread.getUserRelatedByUpdatedBy.firstName}} {{thread.getUserRelatedByUpdatedBy.lastName}}</td>
+      {% if is_granted(['ROLE_TREASURER', 'ROLE_PRESIDENT']) %}
+        <th>&nbsp</th>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 {% endblock %}

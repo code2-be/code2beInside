@@ -17,3 +17,6 @@ propel.sql.dir = ${propel.project.dir}/../data/sql
 
 propel.runtime.phpconf.file = ${propel.project}-conf.php
 propel.runtime.phpconf-classmap.file = ${propel.project}-classmap.php
+
+# Add your custom behavior paths here
+propel.behavior.blamable.class = ${propel.project.dir}/../lib.Code2be\Propel\Behavior\BlamableBehavior

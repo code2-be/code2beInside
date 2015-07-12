@@ -2,11 +2,11 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\om\BaseComment;
+use Code2be\Model\om\BasePostQuery;
 
 
 /**
- * Skeleton subclass for representing a row from the 'comment' table.
+ * Skeleton subclass for performing query and update operations on the 'post' table.
  *
  *
  *
@@ -16,6 +16,6 @@ use Code2be\Model\om\BaseComment;
  *
  * @package    propel.generator.
  */
-class Comment extends BaseComment
+class PostQuery extends BasePostQuery
 {
 }

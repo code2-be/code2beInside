@@ -49,6 +49,8 @@ class UserTableMap extends TableMap
         $this->addColumn('password', 'Password', 'VARCHAR', false, 255, null);
         $this->addColumn('phone_number', 'PhoneNumber', 'VARCHAR', false, 255, null);
         $this->addColumn('role', 'Role', 'VARCHAR', false, 25, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'user', 'id', false, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'user', 'id', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
         // validators
@@ -69,6 +71,14 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('UserRelatedByCreatedBy', 'Code2be\\Model\\User', RelationMap::MANY_TO_ONE, array('created_by' => 'id', ), null, null);
+        $this->addRelation('UserRelatedByUpdatedBy', 'Code2be\\Model\\User', RelationMap::MANY_TO_ONE, array('updated_by' => 'id', ), null, null);
+        $this->addRelation('UserRelatedById0', 'Code2be\\Model\\User', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), null, null, 'UsersRelatedById0');
+        $this->addRelation('UserRelatedById1', 'Code2be\\Model\\User', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), null, null, 'UsersRelatedById1');
+        $this->addRelation('ThreadRelatedByCreatedBy', 'Code2be\\Model\\Thread', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), null, null, 'ThreadsRelatedByCreatedBy');
+        $this->addRelation('ThreadRelatedByUpdatedBy', 'Code2be\\Model\\Thread', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), null, null, 'ThreadsRelatedByUpdatedBy');
+        $this->addRelation('PostRelatedByCreatedBy', 'Code2be\\Model\\Post', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), null, null, 'PostsRelatedByCreatedBy');
+        $this->addRelation('PostRelatedByUpdatedBy', 'Code2be\\Model\\Post', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), null, null, 'PostsRelatedByUpdatedBy');
     } // buildRelations()
 
     /**
@@ -80,6 +90,10 @@ class UserTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
+            'blamable' =>  array (
+  'create_column' => 'created_by',
+  'update_column' => 'updated_by',
+),
             'timestampable' =>  array (
   'create_column' => 'created_at',
   'update_column' => 'updated_at',

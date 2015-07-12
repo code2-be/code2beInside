@@ -2,11 +2,11 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\om\BaseTopicPeer;
+use Code2be\Model\om\BaseThread;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'topic' table.
+ * Skeleton subclass for representing a row from the 'thread' table.
  *
  *
  *
@@ -16,6 +16,6 @@ use Code2be\Model\om\BaseTopicPeer;
  *
  * @package    propel.generator.
  */
-class TopicPeer extends BaseTopicPeer
+class Thread extends BaseThread
 {
 }

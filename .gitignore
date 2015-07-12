@@ -7,3 +7,4 @@
 /app/config/code2be-conf.php
 /app/config/code2be-classmap.php
 *.DS_Store
+/tags

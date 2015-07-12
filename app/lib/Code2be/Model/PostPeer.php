@@ -2,11 +2,11 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\om\BaseCommentPeer;
+use Code2be\Model\om\BasePostPeer;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'comment' table.
+ * Skeleton subclass for performing query and update operations on the 'post' table.
  *
  *
  *
@@ -16,6 +16,6 @@ use Code2be\Model\om\BaseCommentPeer;
  *
  * @package    propel.generator.
  */
-class CommentPeer extends BaseCommentPeer
+class PostPeer extends BasePostPeer
 {
 }

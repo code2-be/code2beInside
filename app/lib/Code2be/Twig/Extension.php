@@ -50,6 +50,18 @@ class Extension extends \Twig_Extension
                     ]
                 );
             }),
+            new \Twig_SimpleFunction('textarea_tag', function($phpName, $label, $value, $errors, $columnName) {
+                echo $this->twigEnvironment->render(
+                    'form/textareaTag.html.twig',
+                    [
+                        'phpName'    => $phpName,
+                        'label'      => $label,
+                        'value'      => $value,
+                        'errors'     => $errors,
+                        'columnName' => $columnName,
+                    ]
+                );
+            }),
             new \Twig_SimpleFunction('select_tag', function($phpName, $label, $choices, $selected, $errors, $columnName) {
                 echo $this->twigEnvironment->render(
                     'form/selectTag.html.twig',

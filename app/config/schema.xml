@@ -23,6 +23,8 @@
           xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
           namespace="Code2be\Model"
         >
+    <behavior name="blamable" />
+    <behavior name="timestampable" />
     <table name="user" phpName="User">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
         <column name="first_name" type="varchar" size="255" required="true"/>
@@ -59,20 +61,27 @@
         <unique name="email_index">
           <unique-column name="email" />
         </unique>
-        <behavior name="timestampable" />
     </table>
-    <table name="topic" phpName="Topic">
+    <table name="thread" phpName="Thread">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
         <column name="title" type="varchar" size="255" required="true"/>
-        <behavior name="timestampable" />
+        <validator column="title">
+          <rule name="required" message="This field is required."/>
+          <rule name="maxLength" value="255" message="This field can be no larger than ${value} in size" />
+        </validator>
     </table>
-    <table name="comment" phpName="Comment">
-        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-        <column name="message" type="varchar" size="255" required="true"/>
-        <column name="topic_id" type="integer" required="true" />
-        <foreign-key foreignTable="topic">
-          <reference local="topic_id" foreign="id" />
-        </foreign-key>
-        <behavior name="timestampable" />
+    <table name="post" phpName="Post">
+      <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" />
+      <column name="body" type="clob" required="true" primaryString="true" />
+      <validator column="body">
+        <rule name="required" message="This field is required."/>
+      </validator>
+      <behavior name="nested_set">
+        <parameter name="use_scope" value="true" />
+        <parameter name="scope_column" value="thread_id" />
+      </behavior>
+      <foreign-key foreignTable="thread" onDelete="cascade">
+        <reference local="thread_id" foreign="id" />
+      </foreign-key>
     </table>
 </database>

@@ -15,31 +15,33 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use Code2be\Model\Comment;
-use Code2be\Model\CommentQuery;
-use Code2be\Model\Topic;
-use Code2be\Model\TopicPeer;
-use Code2be\Model\TopicQuery;
+use Code2be\Model\Post;
+use Code2be\Model\PostQuery;
+use Code2be\Model\Thread;
+use Code2be\Model\ThreadPeer;
+use Code2be\Model\ThreadQuery;
+use Code2be\Model\User;
+use Code2be\Model\UserQuery;
 
 /**
- * Base class that represents a row from the 'topic' table.
+ * Base class that represents a row from the 'thread' table.
  *
  *
  *
  * @package    propel.generator..om
  */
-abstract class BaseTopic extends BaseObject implements Persistent
+abstract class BaseThread extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'Code2be\\Model\\TopicPeer';
+    const PEER = 'Code2be\\Model\\ThreadPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        TopicPeer
+     * @var        ThreadPeer
      */
     protected static $peer;
 
@@ -62,6 +64,18 @@ abstract class BaseTopic extends BaseObject implements Persistent
     protected $title;
 
     /**
+     * The value for the created_by field.
+     * @var        int
+     */
+    protected $created_by;
+
+    /**
+     * The value for the updated_by field.
+     * @var        int
+     */
+    protected $updated_by;
+
+    /**
      * The value for the created_at field.
      * @var        string
      */
@@ -74,10 +88,20 @@ abstract class BaseTopic extends BaseObject implements Persistent
     protected $updated_at;
 
     /**
-     * @var        PropelObjectCollection|Comment[] Collection to store aggregation of Comment objects.
+     * @var        User
      */
-    protected $collComments;
-    protected $collCommentsPartial;
+    protected $aUserRelatedByCreatedBy;
+
+    /**
+     * @var        User
+     */
+    protected $aUserRelatedByUpdatedBy;
+
+    /**
+     * @var        PropelObjectCollection|Post[] Collection to store aggregation of Post objects.
+     */
+    protected $collPosts;
+    protected $collPostsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -103,7 +127,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
-    protected $commentsScheduledForDeletion = null;
+    protected $postsScheduledForDeletion = null;
 
     /**
      * Get the [id] column value.
@@ -125,6 +149,28 @@ abstract class BaseTopic extends BaseObject implements Persistent
     {
 
         return $this->title;
+    }
+
+    /**
+     * Get the [created_by] column value.
+     *
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+
+        return $this->created_by;
+    }
+
+    /**
+     * Get the [updated_by] column value.
+     *
+     * @return int
+     */
+    public function getUpdatedBy()
+    {
+
+        return $this->updated_by;
     }
 
     /**
@@ -211,7 +257,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * Set the value of [id] column.
      *
      * @param  int $v new value
-     * @return Topic The current object (for fluent API support)
+     * @return Thread The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -221,7 +267,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[] = TopicPeer::ID;
+            $this->modifiedColumns[] = ThreadPeer::ID;
         }
 
 
@@ -232,7 +278,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * Set the value of [title] column.
      *
      * @param  string $v new value
-     * @return Topic The current object (for fluent API support)
+     * @return Thread The current object (for fluent API support)
      */
     public function setTitle($v)
     {
@@ -242,7 +288,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
 
         if ($this->title !== $v) {
             $this->title = $v;
-            $this->modifiedColumns[] = TopicPeer::TITLE;
+            $this->modifiedColumns[] = ThreadPeer::TITLE;
         }
 
 
@@ -250,11 +296,61 @@ abstract class BaseTopic extends BaseObject implements Persistent
     } // setTitle()
 
     /**
+     * Set the value of [created_by] column.
+     *
+     * @param  int $v new value
+     * @return Thread The current object (for fluent API support)
+     */
+    public function setCreatedBy($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->created_by !== $v) {
+            $this->created_by = $v;
+            $this->modifiedColumns[] = ThreadPeer::CREATED_BY;
+        }
+
+        if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
+            $this->aUserRelatedByCreatedBy = null;
+        }
+
+
+        return $this;
+    } // setCreatedBy()
+
+    /**
+     * Set the value of [updated_by] column.
+     *
+     * @param  int $v new value
+     * @return Thread The current object (for fluent API support)
+     */
+    public function setUpdatedBy($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->updated_by !== $v) {
+            $this->updated_by = $v;
+            $this->modifiedColumns[] = ThreadPeer::UPDATED_BY;
+        }
+
+        if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
+            $this->aUserRelatedByUpdatedBy = null;
+        }
+
+
+        return $this;
+    } // setUpdatedBy()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Topic The current object (for fluent API support)
+     * @return Thread The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -264,7 +360,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->created_at = $newDateAsString;
-                $this->modifiedColumns[] = TopicPeer::CREATED_AT;
+                $this->modifiedColumns[] = ThreadPeer::CREATED_AT;
             }
         } // if either are not null
 
@@ -277,7 +373,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Topic The current object (for fluent API support)
+     * @return Thread The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -287,7 +383,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->updated_at = $newDateAsString;
-                $this->modifiedColumns[] = TopicPeer::UPDATED_AT;
+                $this->modifiedColumns[] = ThreadPeer::UPDATED_AT;
             }
         } // if either are not null
 
@@ -329,8 +425,10 @@ abstract class BaseTopic extends BaseObject implements Persistent
 
             $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->title = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->created_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->updated_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->created_by = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->updated_by = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->updated_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -340,10 +438,10 @@ abstract class BaseTopic extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 4; // 4 = TopicPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = ThreadPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating Topic object", $e);
+            throw new PropelException("Error populating Thread object", $e);
         }
     }
 
@@ -363,6 +461,12 @@ abstract class BaseTopic extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
+        if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
+            $this->aUserRelatedByCreatedBy = null;
+        }
+        if ($this->aUserRelatedByUpdatedBy !== null && $this->updated_by !== $this->aUserRelatedByUpdatedBy->getId()) {
+            $this->aUserRelatedByUpdatedBy = null;
+        }
     } // ensureConsistency
 
     /**
@@ -386,13 +490,13 @@ abstract class BaseTopic extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TopicPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = TopicPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = ThreadPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -402,7 +506,9 @@ abstract class BaseTopic extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collComments = null;
+            $this->aUserRelatedByCreatedBy = null;
+            $this->aUserRelatedByUpdatedBy = null;
+            $this->collPosts = null;
 
         } // if (deep)
     }
@@ -424,12 +530,12 @@ abstract class BaseTopic extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TopicPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = TopicQuery::create()
+            $deleteQuery = ThreadQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -467,7 +573,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TopicPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -476,17 +582,28 @@ abstract class BaseTopic extends BaseObject implements Persistent
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // blamable behavior
+                if (!$this->isColumnModified(ThreadPeer::CREATED_BY)) {
+                    $this->setCreatedBy(\Code2be\Helper\Auth::getUser()->getId());
+                    }
+                if (!$this->isColumnModified(ThreadPeer::UPDATED_BY)) {
+                    $this->setUpdatedBy(\Code2be\Helper\Auth::getUser()->getId());
+                    }
                 // timestampable behavior
-                if (!$this->isColumnModified(TopicPeer::CREATED_AT)) {
+                if (!$this->isColumnModified(ThreadPeer::CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(TopicPeer::UPDATED_AT)) {
+                if (!$this->isColumnModified(ThreadPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // blamable behavior
+                if ($this->isModified() && !$this->isColumnModified(ThreadPeer::UPDATED_BY)) {
+                    $this->setUpdatedBy(\Code2be\Helper\Auth::getUser()->getId());
+                    }
                 // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(TopicPeer::UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(ThreadPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             }
@@ -498,7 +615,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                TopicPeer::addInstanceToPool($this);
+                ThreadPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -528,6 +645,25 @@ abstract class BaseTopic extends BaseObject implements Persistent
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUserRelatedByCreatedBy !== null) {
+                if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
+                    $affectedRows += $this->aUserRelatedByCreatedBy->save($con);
+                }
+                $this->setUserRelatedByCreatedBy($this->aUserRelatedByCreatedBy);
+            }
+
+            if ($this->aUserRelatedByUpdatedBy !== null) {
+                if ($this->aUserRelatedByUpdatedBy->isModified() || $this->aUserRelatedByUpdatedBy->isNew()) {
+                    $affectedRows += $this->aUserRelatedByUpdatedBy->save($con);
+                }
+                $this->setUserRelatedByUpdatedBy($this->aUserRelatedByUpdatedBy);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -539,17 +675,17 @@ abstract class BaseTopic extends BaseObject implements Persistent
                 $this->resetModified();
             }
 
-            if ($this->commentsScheduledForDeletion !== null) {
-                if (!$this->commentsScheduledForDeletion->isEmpty()) {
-                    CommentQuery::create()
-                        ->filterByPrimaryKeys($this->commentsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->postsScheduledForDeletion !== null) {
+                if (!$this->postsScheduledForDeletion->isEmpty()) {
+                    PostQuery::create()
+                        ->filterByPrimaryKeys($this->postsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->commentsScheduledForDeletion = null;
+                    $this->postsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collComments !== null) {
-                foreach ($this->collComments as $referrerFK) {
+            if ($this->collPosts !== null) {
+                foreach ($this->collPosts as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -576,27 +712,33 @@ abstract class BaseTopic extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = TopicPeer::ID;
+        $this->modifiedColumns[] = ThreadPeer::ID;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . TopicPeer::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ThreadPeer::ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(TopicPeer::ID)) {
+        if ($this->isColumnModified(ThreadPeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`id`';
         }
-        if ($this->isColumnModified(TopicPeer::TITLE)) {
+        if ($this->isColumnModified(ThreadPeer::TITLE)) {
             $modifiedColumns[':p' . $index++]  = '`title`';
         }
-        if ($this->isColumnModified(TopicPeer::CREATED_AT)) {
+        if ($this->isColumnModified(ThreadPeer::CREATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = '`created_by`';
+        }
+        if ($this->isColumnModified(ThreadPeer::UPDATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = '`updated_by`';
+        }
+        if ($this->isColumnModified(ThreadPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
-        if ($this->isColumnModified(TopicPeer::UPDATED_AT)) {
+        if ($this->isColumnModified(ThreadPeer::UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`updated_at`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `topic` (%s) VALUES (%s)',
+            'INSERT INTO `thread` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -610,6 +752,12 @@ abstract class BaseTopic extends BaseObject implements Persistent
                         break;
                     case '`title`':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                        break;
+                    case '`created_by`':
+                        $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+                        break;
+                    case '`updated_by`':
+                        $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -711,13 +859,31 @@ abstract class BaseTopic extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = TopicPeer::doValidate($this, $columns)) !== true) {
+            // We call the validate method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUserRelatedByCreatedBy !== null) {
+                if (!$this->aUserRelatedByCreatedBy->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aUserRelatedByCreatedBy->getValidationFailures());
+                }
+            }
+
+            if ($this->aUserRelatedByUpdatedBy !== null) {
+                if (!$this->aUserRelatedByUpdatedBy->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aUserRelatedByUpdatedBy->getValidationFailures());
+                }
+            }
+
+
+            if (($retval = ThreadPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
 
-                if ($this->collComments !== null) {
-                    foreach ($this->collComments as $referrerFK) {
+                if ($this->collPosts !== null) {
+                    foreach ($this->collPosts as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
@@ -743,7 +909,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = TopicPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ThreadPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -766,9 +932,15 @@ abstract class BaseTopic extends BaseObject implements Persistent
                 return $this->getTitle();
                 break;
             case 2:
-                return $this->getCreatedAt();
+                return $this->getCreatedBy();
                 break;
             case 3:
+                return $this->getUpdatedBy();
+                break;
+            case 4:
+                return $this->getCreatedAt();
+                break;
+            case 5:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -794,16 +966,18 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Topic'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Thread'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Topic'][$this->getPrimaryKey()] = true;
-        $keys = TopicPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['Thread'][$this->getPrimaryKey()] = true;
+        $keys = ThreadPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getTitle(),
-            $keys[2] => $this->getCreatedAt(),
-            $keys[3] => $this->getUpdatedAt(),
+            $keys[2] => $this->getCreatedBy(),
+            $keys[3] => $this->getUpdatedBy(),
+            $keys[4] => $this->getCreatedAt(),
+            $keys[5] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -811,8 +985,14 @@ abstract class BaseTopic extends BaseObject implements Persistent
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collComments) {
-                $result['Comments'] = $this->collComments->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->aUserRelatedByCreatedBy) {
+                $result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUserRelatedByUpdatedBy) {
+                $result['UserRelatedByUpdatedBy'] = $this->aUserRelatedByUpdatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collPosts) {
+                $result['Posts'] = $this->collPosts->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -832,7 +1012,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = TopicPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ThreadPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -855,9 +1035,15 @@ abstract class BaseTopic extends BaseObject implements Persistent
                 $this->setTitle($value);
                 break;
             case 2:
-                $this->setCreatedAt($value);
+                $this->setCreatedBy($value);
                 break;
             case 3:
+                $this->setUpdatedBy($value);
+                break;
+            case 4:
+                $this->setCreatedAt($value);
+                break;
+            case 5:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -882,12 +1068,14 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = TopicPeer::getFieldNames($keyType);
+        $keys = ThreadPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setTitle($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedBy($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedBy($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
     }
 
     /**
@@ -897,12 +1085,14 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(TopicPeer::DATABASE_NAME);
+        $criteria = new Criteria(ThreadPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(TopicPeer::ID)) $criteria->add(TopicPeer::ID, $this->id);
-        if ($this->isColumnModified(TopicPeer::TITLE)) $criteria->add(TopicPeer::TITLE, $this->title);
-        if ($this->isColumnModified(TopicPeer::CREATED_AT)) $criteria->add(TopicPeer::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(TopicPeer::UPDATED_AT)) $criteria->add(TopicPeer::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ThreadPeer::ID)) $criteria->add(ThreadPeer::ID, $this->id);
+        if ($this->isColumnModified(ThreadPeer::TITLE)) $criteria->add(ThreadPeer::TITLE, $this->title);
+        if ($this->isColumnModified(ThreadPeer::CREATED_BY)) $criteria->add(ThreadPeer::CREATED_BY, $this->created_by);
+        if ($this->isColumnModified(ThreadPeer::UPDATED_BY)) $criteria->add(ThreadPeer::UPDATED_BY, $this->updated_by);
+        if ($this->isColumnModified(ThreadPeer::CREATED_AT)) $criteria->add(ThreadPeer::CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ThreadPeer::UPDATED_AT)) $criteria->add(ThreadPeer::UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -917,8 +1107,8 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(TopicPeer::DATABASE_NAME);
-        $criteria->add(TopicPeer::ID, $this->id);
+        $criteria = new Criteria(ThreadPeer::DATABASE_NAME);
+        $criteria->add(ThreadPeer::ID, $this->id);
 
         return $criteria;
     }
@@ -959,7 +1149,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of Topic (or compatible) type.
+     * @param object $copyObj An object of Thread (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -967,6 +1157,8 @@ abstract class BaseTopic extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setTitle($this->getTitle());
+        $copyObj->setCreatedBy($this->getCreatedBy());
+        $copyObj->setUpdatedBy($this->getUpdatedBy());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
 
@@ -977,9 +1169,9 @@ abstract class BaseTopic extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            foreach ($this->getComments() as $relObj) {
+            foreach ($this->getPosts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addComment($relObj->copy($deepCopy));
+                    $copyObj->addPost($relObj->copy($deepCopy));
                 }
             }
 
@@ -1002,7 +1194,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return Topic Clone of current object.
+     * @return Thread Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1022,15 +1214,119 @@ abstract class BaseTopic extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return TopicPeer
+     * @return ThreadPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new TopicPeer();
+            self::$peer = new ThreadPeer();
         }
 
         return self::$peer;
+    }
+
+    /**
+     * Declares an association between this object and a User object.
+     *
+     * @param                  User $v
+     * @return Thread The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUserRelatedByCreatedBy(User $v = null)
+    {
+        if ($v === null) {
+            $this->setCreatedBy(NULL);
+        } else {
+            $this->setCreatedBy($v->getId());
+        }
+
+        $this->aUserRelatedByCreatedBy = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the User object, it will not be re-added.
+        if ($v !== null) {
+            $v->addThreadRelatedByCreatedBy($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated User object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return User The associated User object.
+     * @throws PropelException
+     */
+    public function getUserRelatedByCreatedBy(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aUserRelatedByCreatedBy === null && ($this->created_by !== null) && $doQuery) {
+            $this->aUserRelatedByCreatedBy = UserQuery::create()->findPk($this->created_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUserRelatedByCreatedBy->addThreadsRelatedByCreatedBy($this);
+             */
+        }
+
+        return $this->aUserRelatedByCreatedBy;
+    }
+
+    /**
+     * Declares an association between this object and a User object.
+     *
+     * @param                  User $v
+     * @return Thread The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUserRelatedByUpdatedBy(User $v = null)
+    {
+        if ($v === null) {
+            $this->setUpdatedBy(NULL);
+        } else {
+            $this->setUpdatedBy($v->getId());
+        }
+
+        $this->aUserRelatedByUpdatedBy = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the User object, it will not be re-added.
+        if ($v !== null) {
+            $v->addThreadRelatedByUpdatedBy($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated User object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return User The associated User object.
+     * @throws PropelException
+     */
+    public function getUserRelatedByUpdatedBy(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aUserRelatedByUpdatedBy === null && ($this->updated_by !== null) && $doQuery) {
+            $this->aUserRelatedByUpdatedBy = UserQuery::create()->findPk($this->updated_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUserRelatedByUpdatedBy->addThreadsRelatedByUpdatedBy($this);
+             */
+        }
+
+        return $this->aUserRelatedByUpdatedBy;
     }
 
 
@@ -1044,42 +1340,42 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
-        if ('Comment' == $relationName) {
-            $this->initComments();
+        if ('Post' == $relationName) {
+            $this->initPosts();
         }
     }
 
     /**
-     * Clears out the collComments collection
+     * Clears out the collPosts collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Topic The current object (for fluent API support)
-     * @see        addComments()
+     * @return Thread The current object (for fluent API support)
+     * @see        addPosts()
      */
-    public function clearComments()
+    public function clearPosts()
     {
-        $this->collComments = null; // important to set this to null since that means it is uninitialized
-        $this->collCommentsPartial = null;
+        $this->collPosts = null; // important to set this to null since that means it is uninitialized
+        $this->collPostsPartial = null;
 
         return $this;
     }
 
     /**
-     * reset is the collComments collection loaded partially
+     * reset is the collPosts collection loaded partially
      *
      * @return void
      */
-    public function resetPartialComments($v = true)
+    public function resetPartialPosts($v = true)
     {
-        $this->collCommentsPartial = $v;
+        $this->collPostsPartial = $v;
     }
 
     /**
-     * Initializes the collComments collection.
+     * Initializes the collPosts collection.
      *
-     * By default this just sets the collComments collection to an empty array (like clearcollComments());
+     * By default this just sets the collPosts collection to an empty array (like clearcollPosts());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1088,158 +1384,158 @@ abstract class BaseTopic extends BaseObject implements Persistent
      *
      * @return void
      */
-    public function initComments($overrideExisting = true)
+    public function initPosts($overrideExisting = true)
     {
-        if (null !== $this->collComments && !$overrideExisting) {
+        if (null !== $this->collPosts && !$overrideExisting) {
             return;
         }
-        $this->collComments = new PropelObjectCollection();
-        $this->collComments->setModel('Comment');
+        $this->collPosts = new PropelObjectCollection();
+        $this->collPosts->setModel('Post');
     }
 
     /**
-     * Gets an array of Comment objects which contain a foreign key that references this object.
+     * Gets an array of Post objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Topic is new, it will return
+     * If this Thread is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Comment[] List of Comment objects
+     * @return PropelObjectCollection|Post[] List of Post objects
      * @throws PropelException
      */
-    public function getComments($criteria = null, PropelPDO $con = null)
+    public function getPosts($criteria = null, PropelPDO $con = null)
     {
-        $partial = $this->collCommentsPartial && !$this->isNew();
-        if (null === $this->collComments || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collComments) {
+        $partial = $this->collPostsPartial && !$this->isNew();
+        if (null === $this->collPosts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPosts) {
                 // return empty collection
-                $this->initComments();
+                $this->initPosts();
             } else {
-                $collComments = CommentQuery::create(null, $criteria)
-                    ->filterByTopic($this)
+                $collPosts = PostQuery::create(null, $criteria)
+                    ->filterByThread($this)
                     ->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collCommentsPartial && count($collComments)) {
-                      $this->initComments(false);
+                    if (false !== $this->collPostsPartial && count($collPosts)) {
+                      $this->initPosts(false);
 
-                      foreach ($collComments as $obj) {
-                        if (false == $this->collComments->contains($obj)) {
-                          $this->collComments->append($obj);
+                      foreach ($collPosts as $obj) {
+                        if (false == $this->collPosts->contains($obj)) {
+                          $this->collPosts->append($obj);
                         }
                       }
 
-                      $this->collCommentsPartial = true;
+                      $this->collPostsPartial = true;
                     }
 
-                    $collComments->getInternalIterator()->rewind();
+                    $collPosts->getInternalIterator()->rewind();
 
-                    return $collComments;
+                    return $collPosts;
                 }
 
-                if ($partial && $this->collComments) {
-                    foreach ($this->collComments as $obj) {
+                if ($partial && $this->collPosts) {
+                    foreach ($this->collPosts as $obj) {
                         if ($obj->isNew()) {
-                            $collComments[] = $obj;
+                            $collPosts[] = $obj;
                         }
                     }
                 }
 
-                $this->collComments = $collComments;
-                $this->collCommentsPartial = false;
+                $this->collPosts = $collPosts;
+                $this->collPostsPartial = false;
             }
         }
 
-        return $this->collComments;
+        return $this->collPosts;
     }
 
     /**
-     * Sets a collection of Comment objects related by a one-to-many relationship
+     * Sets a collection of Post objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param PropelCollection $comments A Propel collection.
+     * @param PropelCollection $posts A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Topic The current object (for fluent API support)
+     * @return Thread The current object (for fluent API support)
      */
-    public function setComments(PropelCollection $comments, PropelPDO $con = null)
+    public function setPosts(PropelCollection $posts, PropelPDO $con = null)
     {
-        $commentsToDelete = $this->getComments(new Criteria(), $con)->diff($comments);
+        $postsToDelete = $this->getPosts(new Criteria(), $con)->diff($posts);
 
 
-        $this->commentsScheduledForDeletion = $commentsToDelete;
+        $this->postsScheduledForDeletion = $postsToDelete;
 
-        foreach ($commentsToDelete as $commentRemoved) {
-            $commentRemoved->setTopic(null);
+        foreach ($postsToDelete as $postRemoved) {
+            $postRemoved->setThread(null);
         }
 
-        $this->collComments = null;
-        foreach ($comments as $comment) {
-            $this->addComment($comment);
+        $this->collPosts = null;
+        foreach ($posts as $post) {
+            $this->addPost($post);
         }
 
-        $this->collComments = $comments;
-        $this->collCommentsPartial = false;
+        $this->collPosts = $posts;
+        $this->collPostsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Comment objects.
+     * Returns the number of related Post objects.
      *
      * @param Criteria $criteria
      * @param boolean $distinct
      * @param PropelPDO $con
-     * @return int             Count of related Comment objects.
+     * @return int             Count of related Post objects.
      * @throws PropelException
      */
-    public function countComments(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function countPosts(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $partial = $this->collCommentsPartial && !$this->isNew();
-        if (null === $this->collComments || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collComments) {
+        $partial = $this->collPostsPartial && !$this->isNew();
+        if (null === $this->collPosts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPosts) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getComments());
+                return count($this->getPosts());
             }
-            $query = CommentQuery::create(null, $criteria);
+            $query = PostQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByTopic($this)
+                ->filterByThread($this)
                 ->count($con);
         }
 
-        return count($this->collComments);
+        return count($this->collPosts);
     }
 
     /**
-     * Method called to associate a Comment object to this object
-     * through the Comment foreign key attribute.
+     * Method called to associate a Post object to this object
+     * through the Post foreign key attribute.
      *
-     * @param    Comment $l Comment
-     * @return Topic The current object (for fluent API support)
+     * @param    Post $l Post
+     * @return Thread The current object (for fluent API support)
      */
-    public function addComment(Comment $l)
+    public function addPost(Post $l)
     {
-        if ($this->collComments === null) {
-            $this->initComments();
-            $this->collCommentsPartial = true;
+        if ($this->collPosts === null) {
+            $this->initPosts();
+            $this->collPostsPartial = true;
         }
 
-        if (!in_array($l, $this->collComments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddComment($l);
+        if (!in_array($l, $this->collPosts->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPost($l);
 
-            if ($this->commentsScheduledForDeletion and $this->commentsScheduledForDeletion->contains($l)) {
-                $this->commentsScheduledForDeletion->remove($this->commentsScheduledForDeletion->search($l));
+            if ($this->postsScheduledForDeletion and $this->postsScheduledForDeletion->contains($l)) {
+                $this->postsScheduledForDeletion->remove($this->postsScheduledForDeletion->search($l));
             }
         }
 
@@ -1247,31 +1543,81 @@ abstract class BaseTopic extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Comment $comment The comment object to add.
+     * @param	Post $post The post object to add.
      */
-    protected function doAddComment($comment)
+    protected function doAddPost($post)
     {
-        $this->collComments[]= $comment;
-        $comment->setTopic($this);
+        $this->collPosts[]= $post;
+        $post->setThread($this);
     }
 
     /**
-     * @param	Comment $comment The comment object to remove.
-     * @return Topic The current object (for fluent API support)
+     * @param	Post $post The post object to remove.
+     * @return Thread The current object (for fluent API support)
      */
-    public function removeComment($comment)
+    public function removePost($post)
     {
-        if ($this->getComments()->contains($comment)) {
-            $this->collComments->remove($this->collComments->search($comment));
-            if (null === $this->commentsScheduledForDeletion) {
-                $this->commentsScheduledForDeletion = clone $this->collComments;
-                $this->commentsScheduledForDeletion->clear();
+        if ($this->getPosts()->contains($post)) {
+            $this->collPosts->remove($this->collPosts->search($post));
+            if (null === $this->postsScheduledForDeletion) {
+                $this->postsScheduledForDeletion = clone $this->collPosts;
+                $this->postsScheduledForDeletion->clear();
             }
-            $this->commentsScheduledForDeletion[]= clone $comment;
-            $comment->setTopic(null);
+            $this->postsScheduledForDeletion[]= $post;
+            $post->setThread(null);
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Thread is new, it will return
+     * an empty collection; or if this Thread has previously
+     * been saved, it will retrieve related Posts from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Thread.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Post[] List of Post objects
+     */
+    public function getPostsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PostQuery::create(null, $criteria);
+        $query->joinWith('UserRelatedByCreatedBy', $join_behavior);
+
+        return $this->getPosts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Thread is new, it will return
+     * an empty collection; or if this Thread has previously
+     * been saved, it will retrieve related Posts from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Thread.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Post[] List of Post objects
+     */
+    public function getPostsJoinUserRelatedByUpdatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PostQuery::create(null, $criteria);
+        $query->joinWith('UserRelatedByUpdatedBy', $join_behavior);
+
+        return $this->getPosts($query, $con);
     }
 
     /**
@@ -1281,6 +1627,8 @@ abstract class BaseTopic extends BaseObject implements Persistent
     {
         $this->id = null;
         $this->title = null;
+        $this->created_by = null;
+        $this->updated_by = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1305,19 +1653,27 @@ abstract class BaseTopic extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->collComments) {
-                foreach ($this->collComments as $o) {
+            if ($this->collPosts) {
+                foreach ($this->collPosts as $o) {
                     $o->clearAllReferences($deep);
                 }
+            }
+            if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
+              $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
+            }
+            if ($this->aUserRelatedByUpdatedBy instanceof Persistent) {
+              $this->aUserRelatedByUpdatedBy->clearAllReferences($deep);
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        if ($this->collComments instanceof PropelCollection) {
-            $this->collComments->clearIterator();
+        if ($this->collPosts instanceof PropelCollection) {
+            $this->collPosts->clearIterator();
         }
-        $this->collComments = null;
+        $this->collPosts = null;
+        $this->aUserRelatedByCreatedBy = null;
+        $this->aUserRelatedByUpdatedBy = null;
     }
 
     /**
@@ -1327,7 +1683,7 @@ abstract class BaseTopic extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(TopicPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ThreadPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -1345,11 +1701,11 @@ abstract class BaseTopic extends BaseObject implements Persistent
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     Topic The current object (for fluent API support)
+     * @return     Thread The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[] = TopicPeer::UPDATED_AT;
+        $this->modifiedColumns[] = ThreadPeer::UPDATED_AT;
 
         return $this;
     }

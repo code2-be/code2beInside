@@ -5,11 +5,8 @@
 
     require_once __ROOT__.'/app/routes/security.php';
     require_once __ROOT__.'/app/routes/users.php';
+    require_once __ROOT__.'/app/routes/ideabox.php';
 
-
-    $app->get('/ideabox', function() use ($app) {
-        echo $app->view->render('ideaBox.html.twig', ['active' => 'ideaBox']);
-    })->name('ideaBox');
 
     $app->get('/accounting/incoming', function() use ($app) {
         echo $app->view->render(

@@ -2,11 +2,11 @@
 
 namespace Code2be\Model;
 
-use Code2be\Model\om\BaseTopicQuery;
+use Code2be\Model\om\BasePost;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'topic' table.
+ * Skeleton subclass for representing a row from the 'post' table.
  *
  *
  *
@@ -16,6 +16,6 @@ use Code2be\Model\om\BaseTopicQuery;
  *
  * @package    propel.generator.
  */
-class TopicQuery extends BaseTopicQuery
+class Post extends BasePost
 {
 }
