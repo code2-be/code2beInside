@@ -74,7 +74,7 @@ class Auth
           ->setPassword($yaml['mailer']['password'])
         ;
 
-        $url =
+        $url = 'http://'.$_SERVER['HTTP_HOST'];
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
