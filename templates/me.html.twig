@@ -8,22 +8,17 @@
   <div class="alert alert-danger" role="alert">{{ flash['error'] }}</div>
 {% endif %}
 
-<form class="form-horizontal" method="post" action="{{ urlFor('user_post') }}">
+<form class="form-horizontal" method="post" action="{{ urlFor('me_post') }}">
   <input type="hidden" name="id" value="{{ user.id }}">
   {{ input_tag('firstName', 'Prénom', user.firstName, errors, 'user.first_name') }}
   {{ input_tag('lastName', 'Nom', user.lastName, errors, 'user.last_name') }}
   {{ input_tag('email', 'E-mail', user.email, errors, 'user.email', 'mail') }}
   {{ input_tag('phoneNumber', 'Téléphone', user.phoneNumber, errors, 'user.phone_number') }}
-  {{ select_tag('role', 'Rôle', roles, user.role, errors, 'user.phone_number') }}
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="generatePassword"> Générer un mot de passe et l'envoyer par mail
-        </label>
-      </div>
-    </div>
-  </div>
+  {{ input_tag('currentPassword', 'Mot de passe actuel', '', errors, 'user.current_password', 'password') }}
+  {{ input_tag('password', 'Nouveau Mot de passe', '', errors, 'user.password', 'password') }}
+  {{ input_tag('rePassword', 'Retaper le', '', errors, 'user.re_password', 'password') }}
+
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">Enregistrer</button>

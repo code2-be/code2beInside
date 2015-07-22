@@ -24,7 +24,7 @@ class Extension extends \Twig_Extension
             new \Twig_SimpleFunction('is_granted', function($roles) {
                 return \Code2be\Helper\Voter::isGranted($roles);
             }),
-            new \Twig_SimpleFunction('input_tag', function($phpName, $label, $value, $errors, $columnName) {
+            new \Twig_SimpleFunction('input_tag', function($phpName, $label, $value, $errors, $columnName, $type = 'text') {
                 echo $this->twigEnvironment->render(
                     'form/inputTag.html.twig',
                     [
@@ -33,20 +33,7 @@ class Extension extends \Twig_Extension
                         'value'      => $value,
                         'errors'     => $errors,
                         'columnName' => $columnName,
-                        'type'       => 'text',
-                    ]
-                );
-            }),
-            new \Twig_SimpleFunction('input_tag_mail', function($phpName, $label, $value, $errors, $columnName) {
-                echo $this->twigEnvironment->render(
-                    'form/inputTag.html.twig',
-                    [
-                        'phpName'    => $phpName,
-                        'label'      => $label,
-                        'value'      => $value,
-                        'errors'     => $errors,
-                        'columnName' => $columnName,
-                        'type'       => 'mail',
+                        'type'       => $type,
                     ]
                 );
             }),

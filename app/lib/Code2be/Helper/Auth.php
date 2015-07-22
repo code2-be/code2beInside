@@ -43,6 +43,10 @@ class Auth
         return $user;
     }
 
+    public static function updateUser($user) {
+        $_SESSION['user'] = $user->toJSON();
+    }
+
     public static function generatePassword(&$user) {
 
         $pass = self::getNewPassword();

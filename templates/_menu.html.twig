@@ -25,7 +25,7 @@
         <li {% if active == 'ideaBox' %}class="active"{% endif %}><a href="{{ urlFor('ideaBox') }}">Boite à idées</a></li>
       </ul>
       <ul class="nav navbar-right navbar-nav">
-        <li><a href="#">{{ session.getUser.firstName }} {{ session.getUser.lastName }}</a></li>
+        <li {% if active == 'profile' %}class="active"{% endif %}><a href="{{urlFor('me')}}">{{ session.getUser.firstName }} {{ session.getUser.lastName }}</a></li>
         <li class="logout"><a href="{{ urlFor('logout') }}"><i class="fa fa-sign-out fa-2x"></i></a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
