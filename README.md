@@ -15,4 +15,7 @@ You have to edit app/config/runtime-conf.xml, app/config/build.properties and ap
 ~$ ./bin/propel app/config/ convert-conf 
 
 ~$ ./app/console fixtures:load
+
+Dont' forget to create app/cache and give its right 777
+
 ```
